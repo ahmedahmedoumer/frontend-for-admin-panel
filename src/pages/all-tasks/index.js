@@ -1,0 +1,131 @@
+import { Box, Typography } from "@mui/material";
+import { useState } from "react";
+import AllTasksTable from "../../modules/components/all-tasks/AllTasksTable";
+import UserDetiail from "../../modules/components/all-tasks/UserDetiail";
+import PageHeader from "../../modules/PageHeader";
+import ViewContainer from "../../modules/ViewContainer";
+import ViewDate from "../../modules/ViewDate";
+import user1 from "../../assets/images/users/user1.png";
+import user2 from "../../assets/images/users/user2.png";
+import user3 from "../../assets/images/users/user3.png";
+import user4 from "../../assets/images/users/user4.png";
+import user5 from "../../assets/images/users/user5.png";
+import user6 from "../../assets/images/users/user6.png";
+import arrow from "../../assets/images/arrow.svg";
+
+export default function AllTasks() {
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const data = [
+    {
+      img: user1,
+      name: "Omar",
+      industry: "Real Estet",
+      recievedTime: ["22/04/2023", "7:00 Am"],
+      status: "new",
+      submitDate: ["22/04/2023", "7:00 Am"],
+    },
+    {
+      img: user2,
+      name: "Ahmed",
+      industry: "Real Estet",
+      recievedTime: ["22/04/2023", "7:00 Am"],
+      status: "approved",
+      submitDate: ["22/04/2023", "7:00 Am"],
+    },
+    {
+      img: user3,
+      name: "Leo",
+      industry: "Real Estet",
+      recievedTime: ["22/04/2023", "7:00 Am"],
+      status: "needEdit",
+      submitDate: ["22/04/2023", "7:00 Am"],
+    },
+    {
+      img: user4,
+      name: "Cris",
+      industry: "Real Estet",
+      recievedTime: ["22/04/2023", "7:00 Am"],
+      status: "pending",
+      submitDate: ["22/04/2023", "7:00 Am"],
+    },
+    {
+      img: user5,
+      name: "Matheo",
+      industry: "Real Estet",
+      recievedTime: ["22/04/2023", "7:00 Am"],
+      status: "new",
+      submitDate: ["22/04/2023", "7:00 Am"],
+    },
+    {
+      img: user6,
+      name: "Sergio",
+      industry: "Real Estet",
+      recievedTime: ["22/04/2023", "7:00 Am"],
+      status: "approved",
+      submitDate: ["22/04/2023", "7:00 Am"],
+    },
+  ];
+
+  return (
+    <ViewContainer>
+      {selectedUser ? (
+        <Box sx={{ mb: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Typography
+              sx={{
+                fontWeight: 500,
+                fontSize: "30px",
+                lineHeight: "34px",
+                color: "#565656",
+                mb: 0.5,
+              }}
+            >
+              All Tasks
+            </Typography>
+            <Box sx={{ mx: 2 }}>
+              <img src={arrow} />
+            </Box>
+            <Typography
+              sx={{
+                fontWeight: 500,
+                fontSize: "30px",
+                lineHeight: "34px",
+                color: "#565656",
+                mb: 0.5,
+              }}
+            >
+              User Name
+            </Typography>
+          </Box>
+          <Box>
+            <Typography
+              sx={{
+                color: "#B3B3B3",
+                fontWeight: 400,
+                fontSize: "15px",
+                lineHeight: "22px",
+              }}
+            >
+              Lookup for All the All tasks
+            </Typography>
+          </Box>
+        </Box>
+      ) : (
+        <PageHeader
+          title="All Tasks"
+          description="Lookup for All the All tasks"
+        />
+      )}
+
+      {selectedUser ? (
+        <UserDetiail />
+      ) : (
+        <AllTasksTable data={data} setSelectedUser={setSelectedUser} />
+      )}
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <ViewDate />
+      </Box>
+    </ViewContainer>
+  );
+}
