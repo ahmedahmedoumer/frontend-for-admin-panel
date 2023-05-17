@@ -20,8 +20,8 @@ import { useRef, useState } from "react";
 import EditUserDialog from "./EditUserDialog";
 import AreYouSureDialog from "./components/AreYouSureDialog";
 import NotificationPopover from "./NotificationPopover";
-import { LOGIN_USER,SET_lOGIN } from '../context/actionTypes/actionTypes';
-import { useDispatch } from "react-redux";
+import { LOGIN_USER,GET_LOGIN_USER } from '../context/actionTypes/actionTypes';
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   DashboardIcon,
@@ -49,6 +49,7 @@ export default function ContentWrapper({ children }) {
   const [active, setActive] = useState(false);
   const ref = useRef(null);
   const notificationRef = useRef(null);
+  const userData = useSelector((state)=>state);
   const dispatch=useDispatch();
   const Navigate=useNavigate();
   
@@ -69,7 +70,7 @@ export default function ContentWrapper({ children }) {
         console.log(response);
          dispatch({
           type:LOGIN_USER,
-          payload:response.user,
+          payload:response.data,
          });
          Navigate('/dashboard');
       })
@@ -87,7 +88,7 @@ checkAuthenticated();
 
   return (
       <Box>
-     { currentPath.pathname != '/login' && <Box sx={{ display: "flex" }}>
+     { userData.user && <Box sx={{ display: "flex" }}>
         <Drawer
           anchor="left"
           open

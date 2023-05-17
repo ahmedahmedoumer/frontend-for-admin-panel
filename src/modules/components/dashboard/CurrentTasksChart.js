@@ -1,8 +1,10 @@
 import { Typography, Box, Card, CardContent } from "@mui/material";
 import { POPPINS } from "../../../utils/config";
 import progressImg from "../../../assets/images/progressImg.svg";
+import { useSelector } from "react-redux";
 
 export default function CurrentTasksChart() {
+  const currentTask=useSelector((state)=>state);
   return (
     <Card
       sx={{
@@ -40,7 +42,7 @@ export default function CurrentTasksChart() {
             textFillColor: "transparent",
           }}
         >
-          30,000
+          {currentTask.dashboard_data.currentTask}
         </Typography>
         <Box sx={{ position: "absolute", right: "50px", top: "15px" }}>
           <img src={progressImg} width="200px" height="200px" alt="prgress" />

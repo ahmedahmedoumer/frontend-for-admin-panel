@@ -1,8 +1,10 @@
 import { Typography, Card, Box, CardContent } from "@mui/material";
 import { Line } from "@ant-design/plots";
 import { POPPINS } from "../../../utils/config";
+import { useSelector } from "react-redux";
 
 export default function NewTasksChart() {
+  const Task=useSelector((state)=>state);
   const data = [
     {
       year: "1991",
@@ -112,7 +114,7 @@ export default function NewTasksChart() {
             textFillColor: "transparent",
           }}
         >
-          250
+          {Task.dashboard_data.newTask}
         </Typography>
         <Box sx={{ position: "absolute", right: "30px", top: "38px" }}>
           <Line

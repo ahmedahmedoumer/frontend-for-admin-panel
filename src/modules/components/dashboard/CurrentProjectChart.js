@@ -1,8 +1,11 @@
 import { Typography, Card, CardContent, Box } from "@mui/material";
 import { POPPINS } from "../../../utils/config";
 import chartIcon from "../../../assets/images/Chart.png";
+import { useSelector } from "react-redux";
 
 export default function dashboardChartOne() {
+  const curentProject=useSelector((state)=>state);
+  console.log(curentProject);
   return (
     <Card
       sx={{
@@ -41,7 +44,7 @@ export default function dashboardChartOne() {
             textFillColor: "transparent",
           }}
         >
-          +30,000
+          +{curentProject.dashboard_data.current_projects}
         </Typography>
         <img
           src={chartIcon}

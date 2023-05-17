@@ -6,8 +6,35 @@ import NewProjectChart from "../../modules/components/dashboard/NewProjectChart"
 import NewTasksChart from "../../modules/components/dashboard/NewTasksChart";
 import ViewDate from "../../modules/ViewDate";
 import UserCard from "../../modules/components/dashboard/UserCard";
+import { useDispatch,useSelector } from "react-redux";
+import { SET_DASHBOARD_DATA } from '../../context/actionTypes/actionTypes';
+import Axios from 'axios'
+import { useEffect } from "react";
 
 export default function Dashboard() {
+  const dispatch=useDispatch();
+  const selector=useSelector((state)=>state);
+  const dashboard_data=async()=>{
+    await Axios.get('http://localhost:8000/api/dashboard',{
+      headers:{
+        'Authorization':'Bearer '+localStorage.getItem('token'),
+      }
+    })
+    .then(function(response){
+      console.log(response.data);
+            dispatch({
+              type:SET_DASHBOARD_DATA,
+              payload:response.data,
+            });
+            console.log(selector.dashboard_data);
+    })
+    .catch(function(error){
+      console.log(error);
+    });
+};
+useEffect(()=>{
+  dashboard_data();
+},[]);
   return (
     <ViewContainer>
       <Typography

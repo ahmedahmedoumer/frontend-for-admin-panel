@@ -3,8 +3,10 @@ import { Typography, Box, Card, CardContent } from "@mui/material";
 import arrowUpRight from "../../../assets/images/arrow-up-right.png";
 import arrowDownLeft from "../../../assets/images/arrow-down-left.png";
 import { Gauge } from "@ant-design/plots";
+import { useSelector } from "react-redux";
 
 export default function NewProjectChart() {
+  const newProjects=useSelector((state)=>state);
   const config = {
     percent: 0.75,
     range: {
@@ -74,7 +76,7 @@ export default function NewProjectChart() {
             textFillColor: "transparent",
           }}
         >
-          250
+          +{newProjects.dashboard_data.newProject}
         </Typography>
         <Box sx={{ position: "absolute", right: "50px", bottom: "10px" }}>
           <Gauge

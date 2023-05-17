@@ -21,7 +21,7 @@ const dispatch = useDispatch();
         email:'',
         password:'',
     }
-    const [Alert,setAlert]=useState({alert:'',});
+    const [Alert,setAlert]=useState({alert:null});
   const navigate = useNavigate();
   const [Error,setError]=useState({
     emailValidation:'',
@@ -44,49 +44,22 @@ const dispatch = useDispatch();
                 navigate('/dashboard');
              }
              else{
-                setAlert({Alert:response.data.message});
-                console.log(Alert);
+                setAlert({alert:response.data.message});
+                console.log(alert);
              }
         })
        .catch((error)=>{
+        if (error.status===422) {
+            setError({ emailValidation:error.response.data.errors.email,
+                       passwordValidation:error.response.data.errors.password
+            });
+           console.log(Error);
+        }
+        console.log(error);
         //   console.log(error.response.data.errors.email);
-          setError({ emailValidation:error.response.data.errors.email,
-                     passwordValidation:error.response.data.errors.password
+         
        });
-       console.log(Error);
-       });
-    //    , {
-    //        method: 'POST',
-    //        headers: {
-    //            "Content-Type": "application/json",
-    //            Authorization: "Bearer " + localStorage.getItem('token'),
-    //        },
-    //        body: JSON.stringify({
-    //            email: email,
-    //            password: password,
-    //        }),
-    //    })
-    //        .then((response) => response.json())
-    //        .then((data) => {
-    //               if (data.status===200) {
-    //                 localStorage.setItem('token',data.token);
-    //                 dispatch({
-    //                     type:LOGIN_USER,
-    //                     payload:data.user,
-    //               });
-    //               navigate('/dashboard');
-    //               }
-    //               console.log(data.status);
-                 
-    //        })
-    //        .catch((error) => {
-    //             console.log("ahmedin");
-    //            dispatch({
-    //             type:SET_lOGIN_ERROR,
-    //             payload:error,
-    //            });
-    //            console.log(error);
-    //        });
+  
   }
   const handleChange=(e)=>{
          setValues({...values,[e.target.name]:e.target.value});
@@ -114,6 +87,7 @@ const dispatch = useDispatch();
                                   />
                               </span>
                           </div>
+                          {Alert && <span className="alert alert-danger">{alert}</span>}
                           <h5
                               className="fw-normal my-4 pb-3"
                               style={{ letterSpacing: "1px" }}
