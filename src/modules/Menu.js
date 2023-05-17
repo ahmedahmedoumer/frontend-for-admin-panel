@@ -1,7 +1,18 @@
 import { Popover, MenuItem } from "@mui/material";
 
 export default function Menu(props) {
-  const { anchorEl, open, onClose, openDialog } = props;
+  const { anchorEl, open, onClose, openDialog,openSubmit,setTitle,setSubmitText } = props;
+  const handleClick=(newTitle,newSubmitText)=>{
+             setTitle(newTitle);
+             setSubmitText(newSubmitText);
+             if (newSubmitText!=="yes Logout") {
+                  openDialog();
+             }
+             else{
+             openSubmit();
+             }
+    }
+ 
   return (
     <Popover
       anchorEl={anchorEl}
@@ -24,10 +35,10 @@ export default function Menu(props) {
       keepMounted
       transitionDuration={0}
     >
-      <MenuItem onClick={openDialog} sx={{ borderBottom: "1px solid #ccc" }}>
-        Update profil
+      <MenuItem onClick={()=>{handleClick("Are you sure you want to Update the Profile ?","yes Update")}} sx={{ borderBottom: "1px solid #ccc" }}>
+        Update profile
       </MenuItem>
-      <MenuItem onClick={onClose}>Logout</MenuItem>
+      <MenuItem onClick={()=>{handleClick("Are you sure you want to logout ?","yes Logout")}}>Logout</MenuItem>
     </Popover>
   );
 }

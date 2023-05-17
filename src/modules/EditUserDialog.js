@@ -12,11 +12,30 @@ import {
   Box,
   IconButton,
 } from "@mui/material";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import { POPPINS } from "../utils/config";
 import photo from "../assets/images/photo.svg";
 import Select from "../components/Select";
-
 export default function EditUserDialog(props) {
+
+  const userData=useSelector((state)=>state);
+  const [user,setUser]=useState({
+  firstName:'',
+  lastName:'',
+  email:'',
+  title:'',
+  status:'',
+  phone:'',
+  password:'',
+  confirmPassword:'',
+});
+
+const onChangeHandler=(e)=>{
+      e.preventDefault();
+      setUser({...user,[e.target.name]:e.target.value});
+
+}
   const { open, onClose, openSubmit, submitText } = props;
   return (
     <Dialog
@@ -64,6 +83,8 @@ export default function EditUserDialog(props) {
               size="small"
               name="firstName"
               id="first-name"
+              value={userData.user.firstName}
+              onChange={onChangeHandler}
               placeholder="first name"
             />
           </Grid>
@@ -76,6 +97,8 @@ export default function EditUserDialog(props) {
               size="small"
               name="lastName"
               id="last-name"
+              value={userData.user.lastName}
+              onChange={onChangeHandler}
               placeholder="last name"
             />
           </Grid>
@@ -88,7 +111,8 @@ export default function EditUserDialog(props) {
               size="small"
               name="email"
               id="email"
-              placeholder="comapny12@xyz.com"
+              value={userData.user.email}
+              onChange={onChangeHandler}
             />
           </Grid>
           <Grid item lg={6} sx={{ pt: "8px !important" }}>
@@ -100,7 +124,8 @@ export default function EditUserDialog(props) {
               size="small"
               name="phone"
               id="phone"
-              placeholder="+20 ***************"
+              value={userData.user.phone}
+              onChange={onChangeHandler}
             />
           </Grid>
         </Grid>
@@ -115,6 +140,8 @@ export default function EditUserDialog(props) {
               name="title"
               id="title"
               label="Your title"
+              value={userData.user.title}
+              onChange={onChangeHandler}
               items={TITLE_ITEMS}
             />
           </Grid>
@@ -129,6 +156,8 @@ export default function EditUserDialog(props) {
               name="status"
               id="status"
               label="Your Status"
+              value={userData.user.status}
+              onChange={onChangeHandler}
               items={STATUS_ITEMS}
             />
           </Grid>
@@ -141,6 +170,8 @@ export default function EditUserDialog(props) {
               size="small"
               name="password"
               id="password"
+              value="***************"
+              onChange={onChangeHandler}
               placeholder="***************"
             />
           </Grid>
@@ -153,6 +184,8 @@ export default function EditUserDialog(props) {
               size="small"
               name="confirmPassword"
               id="confirm-password"
+              value="***************"
+              onChange={onChangeHandler}
               placeholder="***************"
             />
           </Grid>

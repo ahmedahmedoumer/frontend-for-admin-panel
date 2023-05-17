@@ -8,11 +8,14 @@ import ViewDate from "../../modules/ViewDate";
 import UserCard from "../../modules/components/dashboard/UserCard";
 import { useDispatch,useSelector } from "react-redux";
 import { SET_DASHBOARD_DATA } from '../../context/actionTypes/actionTypes';
+import { useNavigate,useLocation } from "react-router-dom";
 import Axios from 'axios'
 import { useEffect } from "react";
 
 export default function Dashboard() {
+  const currentPath=useLocation();
   const dispatch=useDispatch();
+  const navigate=useNavigate();
   const selector=useSelector((state)=>state);
   const dashboard_data=async()=>{
     await Axios.get('http://localhost:8000/api/dashboard',{
@@ -29,7 +32,8 @@ export default function Dashboard() {
             console.log(selector.dashboard_data);
     })
     .catch(function(error){
-      console.log(error);
+          navigate('/login'); 
+          error.response===401 ? navigate('/login'): console.log(error.response.data.message);
     });
 };
 useEffect(()=>{

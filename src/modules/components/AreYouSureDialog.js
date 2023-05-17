@@ -1,13 +1,29 @@
 import { Dialog, DialogActions, Button, DialogTitle } from "@mui/material";
 import { POPPINS } from "../../utils/config";
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 export default function AreYouSureDialog(props) {
-  const { open, onClose, title, submitText, submit, submitIcon, openSnackbar } =
-    props;
-
-  const handleClose = () => {
-    if (submit) {
+  const { open, onClose, title, submitText, submit, submitIcon, openSnackbar } =props;
+   const Navigate=useNavigate();
+  async function handleClose(){
+    if (submit && submitText==="yes Logout") {
       submit();
+      console.log(localStorage.getItem('token'));
+      const check=await axios.get('http://localhost:8000/api/logout', {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+      .then(function(response){
+        console.log(response.data);
+        localStorage.removeItem('token');
+        
+        Navigate('/login');
+      })
+      .catch(function(error){
+        console.log(error);
+      });
     }
     if (openSnackbar) {
       openSnackbar();

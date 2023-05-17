@@ -50,10 +50,11 @@ export default function ContentWrapper({ children }) {
   const ref = useRef(null);
   const notificationRef = useRef(null);
   const userData = useSelector((state)=>state);
+  const [title,setTitle]=useState("Are you sure you want to Update the Profile ?");
+  const [submitText,setSubmitText]=useState("Yes Update");
   const dispatch=useDispatch();
   const Navigate=useNavigate();
-  
-  
+
   const handleOpenDialog = async() => {
     setIsOpen(false);
     setOpenDialog(true);
@@ -88,7 +89,7 @@ checkAuthenticated();
 
   return (
       <Box>
-     { userData.user && <Box sx={{ display: "flex" }}>
+     { localStorage.getItem('token') && <Box sx={{ display: "flex" }}>
         <Drawer
           anchor="left"
           open
@@ -601,7 +602,10 @@ checkAuthenticated();
         <Menu
           onClose={() => setIsOpen(false)}
           openDialog={handleOpenDialog}
+          openSubmit={()=>setSubmitDialog(true)}
           open={open}
+          setTitle={setTitle}
+          setSubmitText={setSubmitText}
           anchorEl={ref.current}
         />
         <NotificationPopover
@@ -617,8 +621,8 @@ checkAuthenticated();
         <AreYouSureDialog
           open={submitDialog}
           onClose={() => setSubmitDialog(false)}
-          title="Are you sure you want to Update the Profile ?"
-          submitText="Yes, Update"
+          title={title}
+          submitText={submitText}
           submitIcon={submitIcon}
           submit={() => setOpenDialog(false)}
         />

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logo from "../../assets/images/logo.svg";
 import { useSelector , useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
@@ -21,7 +22,7 @@ const dispatch = useDispatch();
         email:'',
         password:'',
     }
-    const [Alert,setAlert]=useState({alert:null});
+  const [Alert,setAlert]=useState(null);
   const navigate = useNavigate();
   const [Error,setError]=useState({
     emailValidation:'',
@@ -44,8 +45,8 @@ const dispatch = useDispatch();
                 navigate('/dashboard');
              }
              else{
-                setAlert({alert:response.data.message});
-                console.log(alert);
+                setAlert(response.data.message);
+                console.log(Alert);
              }
         })
        .catch((error)=>{
@@ -80,14 +81,10 @@ const dispatch = useDispatch();
                                   style={{ color: "#f6219" }}
                               />
                               <span className="h1 fw-bold mb-0">
-                                  <img
-                                      src="../assets/images/logo.svg"
-                                      alt="logo"
-                                      style={{ marginBottom: "64px" }}
-                                  />
+                              <img src={logo} alt="logo" style={{ marginBottom: "64px" }} />
                               </span>
                           </div>
-                          {Alert && <span className="alert alert-danger">{alert}</span>}
+                          {Alert !==null && <span className="alert alert-danger">{Alert}</span>}
                           <h5
                               className="fw-normal my-4 pb-3"
                               style={{ letterSpacing: "1px" }}
