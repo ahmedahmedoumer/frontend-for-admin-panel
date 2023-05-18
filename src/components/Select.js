@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 
 export default function Select(props) {
-  const { fullWidth, label, items, id, name, size, sx } = props;
+  const { fullWidth, label, items, id, name, size, sx,value } = props;
   return (
     <FormControl sx={sx} fullWidth={fullWidth}>
       <InputLabel id={`${id}-label`} size={size}>
@@ -18,6 +18,7 @@ export default function Select(props) {
         name={name}
         id={id}
         label={label}
+        value={value}
       >
         {items.map((item, index) => (
           <MenuItem key={index} value={item.id}>

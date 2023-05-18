@@ -1,12 +1,16 @@
 import { Dialog, DialogActions, Button, DialogTitle } from "@mui/material";
 import { POPPINS } from "../../utils/config";
 import axios from 'axios';
+import { useDispatch,useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { SET_ALERT_MESSAGE, SET_VALIDATION_ERROR,LOGIN_USER } from "../../context/actionTypes/actionTypes";
 
 export default function AreYouSureDialog(props) {
-  const { open, onClose, title, submitText, submit, submitIcon, openSnackbar } =props;
+  const { open, onClose, title, submitText, submit, submitIcon, openSnackbar,updateUserData } =props;
    const Navigate=useNavigate();
-  async function handleClose(){
+   const Selector=useSelector(state=>state);
+   const Dispatch=useDispatch();
+  async function handleSubmit(){
     if (submit && submitText==="yes Logout") {
       submit();
       console.log(localStorage.getItem('token'));
@@ -18,13 +22,39 @@ export default function AreYouSureDialog(props) {
       .then(function(response){
         console.log(response.data);
         localStorage.removeItem('token');
-        
+        Dispatch({
+          type:LOGIN_USER,
+          payload:null,
+        });
         Navigate('/login');
       })
       .catch(function(error){
         console.log(error);
       });
     }
+    else if(submit && submitText=="yes Update"){
+            //  submit();
+           const update=await axios.post('http://localhost:8000/api/update-profile',updateUserData,{
+            headers:{
+              'Authorization':'Bearer '+localStorage.getItem('token'),
+            }
+           })
+           .then(function(response){
+            submit();
+            console.log(response.data);
+          //  Dispatch({
+          //    type:LOGIN_USER,
+          //    payload:response.,
+          // });
+           })
+           .catch(function(error){
+              Dispatch({
+                type:SET_ALERT_MESSAGE,
+                payload:error.response,
+              });
+           });
+    }
+
     if (openSnackbar) {
       openSnackbar();
     }
@@ -73,7 +103,7 @@ export default function AreYouSureDialog(props) {
         </Button>
         <Button
           startIcon={<img src={submitIcon} alt="submitIcon" />}
-          onClick={handleClose}
+          onClick={handleSubmit}
           sx={{
             background:
               "linear-gradient(99.32deg, #B4CD93 7.91%, #427A5B 88.96%)",

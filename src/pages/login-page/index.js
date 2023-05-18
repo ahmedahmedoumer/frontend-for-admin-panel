@@ -10,9 +10,10 @@ import {
   MDBRow,
   MDBCol,
   MDBIcon,
-  MDBInput
+  MDBInput,
 }
 from 'mdb-react-ui-kit';
+import { Alert } from "@mui/material";
 import { LOGIN_USER,SET_lOGIN } from '../../context/actionTypes/actionTypes';
 
 function App() {
@@ -22,7 +23,7 @@ const dispatch = useDispatch();
         email:'',
         password:'',
     }
-  const [Alert,setAlert]=useState(null);
+  const [AlertMessage,setAlert]=useState(null);
   const navigate = useNavigate();
   const [Error,setError]=useState({
     emailValidation:'',
@@ -65,8 +66,9 @@ const dispatch = useDispatch();
   const handleChange=(e)=>{
          setValues({...values,[e.target.name]:e.target.value});
   }
-//   { Alert && <div className='alert alert-danger'>{Alert}</div>}
-
+  const onClose=()=>{
+    setAlert(null);
+  }
   return (
      
       <MDBContainer className="my-5">
@@ -84,7 +86,7 @@ const dispatch = useDispatch();
                               <img src={logo} alt="logo" style={{ marginBottom: "64px" }} />
                               </span>
                           </div>
-                          {Alert !==null && <span className="alert alert-danger">{Alert}</span>}
+                          {AlertMessage !==null && <Alert severity="error" onClose={onClose}>{AlertMessage}</Alert>}
                           <h5
                               className="fw-normal my-4 pb-3"
                               style={{ letterSpacing: "1px" }}

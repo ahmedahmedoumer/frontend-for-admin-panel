@@ -1,8 +1,10 @@
 import { Grid, TextField, InputLabel, Card } from "@mui/material";
 import { POPPINS } from "../../../utils/config";
 import userIcon from "../../../assets/images/userIcon.svg";
+import { useSelector } from "react-redux";
 
 export default function UserCard() {
+const user=useSelector(state=>state.user);
   return (
     <Card
       sx={{
@@ -44,9 +46,11 @@ export default function UserCard() {
             Name
           </InputLabel>
           <TextField
+            disabled
             fullWidth
             size="small"
             name="title"
+            value={user.firstName}
             sx={{ background: "#fff" }}
             id="prompt"
           />
@@ -54,9 +58,11 @@ export default function UserCard() {
             Phone Num
           </InputLabel>
           <TextField
+            disabled
             fullWidth
             size="small"
             name="title"
+            value={user.phone}
             sx={{ background: "#fff" }}
             id="prompt"
           />
@@ -78,9 +84,11 @@ export default function UserCard() {
             Email
           </InputLabel>
           <TextField
+            disabled
             fullWidth
             size="small"
             name="title"
+            value={user.email}
             sx={{ background: "#fff" }}
             id="prompt"
           />
@@ -88,9 +96,11 @@ export default function UserCard() {
             Title
           </InputLabel>
           <TextField
+            disabled
             fullWidth
             size="small"
             name="title"
+            value={user.title}
             sx={{ background: "#fff" }}
             id="prompt"
           />

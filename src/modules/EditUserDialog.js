@@ -11,32 +11,78 @@ import {
   Button,
   Box,
   IconButton,
+  MenuItem,
+  FormControl,
+  FormHelperText,
+  Select,
 } from "@mui/material";
 import { useState } from "react";
+import axios from 'axios';
 import { useSelector } from "react-redux";
 import { POPPINS } from "../utils/config";
 import photo from "../assets/images/photo.svg";
-import Select from "../components/Select";
+// import Select from "../components/Select";
 export default function EditUserDialog(props) {
 
-  const userData=useSelector((state)=>state);
-  const [user,setUser]=useState({
-  firstName:'',
-  lastName:'',
-  email:'',
-  title:'',
-  status:'',
-  phone:'',
-  password:'',
-  confirmPassword:'',
+const { open, onClose, openSubmit, submitText,setUpdateUserData,ValidationData } = props;
+// const ValidationError=useSelector(state=>state);
+const [ValidationError,setValidationError]=useState({
+  firstName:null,
+  lastName:null,
+  email:null,
+  phone:null,
+  status:null,
+  title:null,
+  password:null,
+  confirmPassword:null,
+});
+const userData = useSelector(state => state.user);
+
+const [userArray, setUserArray] = useState({
+  firstName: userData.firstName,
+  lastName: userData.lastName,
+  email: userData.email,
+  title: userData.title,
+  status: userData.status,
+  phone: userData.phone,
+  password: "*************",
+  confirmPassword: "*************"
 });
 
 const onChangeHandler=(e)=>{
       e.preventDefault();
-      setUser({...user,[e.target.name]:e.target.value});
+      setUserArray({...userArray,[e.target.name]:e.target.value});
+      var spanName=e.target.name;
+      if(ValidationError.spanName){
+      var spanElement = document.getElementById(e.target.name);
+      spanElement.style.display = "none";
+      }
+}
+const submiHandling=async()=>{
+  const checkValidation=await axios.post('http://localhost:8000/api/UpdatecheckValidation',userArray,{
+     headers:{
+      'Authorization':'Bearer '+localStorage.getItem('token'),
+     }
+  })
+  .then(function(response){
+    console.log("hello ahmedin");
+    setUpdateUserData(userArray);
+    openSubmit();
+  })
+  .catch(function(error){
+    setValidationError({
+      firstName:error.response.data.errors.firstName,
+      lastName:error.response.data.errors.lastName,
+      email:error.response.data.errors.email,
+      phone:error.response.data.errors.phone,
+      status:error.response.data.errors.status,
+      title:error.response.data.errors.title,
+      password:error.response.data.errors.password,
+      confirmPassword:error.response.data.errors.confirmPassword,
+    });
+  });
 
 }
-  const { open, onClose, openSubmit, submitText } = props;
   return (
     <Dialog
       maxWidth="md"
@@ -83,10 +129,10 @@ const onChangeHandler=(e)=>{
               size="small"
               name="firstName"
               id="first-name"
-              value={userData.user.firstName}
+              value={userArray.firstName}
               onChange={onChangeHandler}
-              placeholder="first name"
             />
+       {ValidationError.firstName && <span className="alert alert-danger" id="firstName">{ValidationError.firstName}</span>}
           </Grid>
           <Grid item lg={6}>
             <InputLabel sx={{ ...labelStyle }} htmlFor="last-name">
@@ -97,10 +143,10 @@ const onChangeHandler=(e)=>{
               size="small"
               name="lastName"
               id="last-name"
-              value={userData.user.lastName}
+              value={userArray.lastName}
               onChange={onChangeHandler}
-              placeholder="last name"
             />
+            {ValidationError.lastName && <span className="alert alert-danger" id="lastName">{ValidationError.lastName}</span>}
           </Grid>
           <Grid item lg={6} sx={{ pt: "8px !important" }}>
             <InputLabel sx={{ ...labelStyle }} htmlFor="email">
@@ -110,10 +156,11 @@ const onChangeHandler=(e)=>{
               fullWidth
               size="small"
               name="email"
-              id="email"
-              value={userData.user.email}
+              id="email_id"
+              value={userArray.email}
               onChange={onChangeHandler}
             />
+            {ValidationError.email && <span className="alert alert-danger" id="email">{ValidationError.email}</span>}
           </Grid>
           <Grid item lg={6} sx={{ pt: "8px !important" }}>
             <InputLabel sx={{ ...labelStyle }} htmlFor="phone">
@@ -123,43 +170,56 @@ const onChangeHandler=(e)=>{
               fullWidth
               size="small"
               name="phone"
-              id="phone"
-              value={userData.user.phone}
+              id="phone_no"
+              value={userArray.phone}
               onChange={onChangeHandler}
             />
+       {ValidationError.phone && <span className="alert alert-danger" id="phone">{ValidationError.phone}</span>}
           </Grid>
         </Grid>
         <Grid container flexDirection="column" spacing={4} sx={{ mb: 7 }}>
           <Grid item lg={6} sx={{ pt: "38px !important" }}>
-            <InputLabel sx={{ ...labelStyle }} htmlFor="Ttitle">
-              Title
-            </InputLabel>
-            <Select
-              fullWidth
-              size="small"
-              name="title"
-              id="title"
-              label="Your title"
-              value={userData.user.title}
-              onChange={onChangeHandler}
-              items={TITLE_ITEMS}
-            />
+          <FormControl required fullWidth>
+          <InputLabel sx={{ ...labelStyle }} htmlFor="Ttitle">
+            Title
+           </InputLabel>
+          <Select
+            fullWidth
+            labelId="demo-simple-select-required-label"
+            name="title"
+            id="title_id"
+            value={userArray.title}
+            label="Status"
+            onChange={onChangeHandler}
+          >
+            <MenuItem  value={"admin"}>admin</MenuItem>
+            <MenuItem  value={"manager"}>manager</MenuItem>
+            <MenuItem  value={"planner"}>admin</MenuItem>
+            <MenuItem  value={"designer"}>designer</MenuItem>
+          </Select>
+        </FormControl>
+       {ValidationError.title && <span className="alert alert-danger" id="title">{ValidationError.title}</span>}
           </Grid>
           <Grid item lg={6} sx={{ pt: "8px !important" }}>
-            <InputLabel sx={{ ...labelStyle }} htmlFor="status">
-              Status
-            </InputLabel>
-
-            <Select
-              fullWidth
-              size="small"
-              name="status"
-              id="status"
-              label="Your Status"
-              value={userData.user.status}
-              onChange={onChangeHandler}
-              items={STATUS_ITEMS}
-            />
+          <FormControl required fullWidth>
+          <InputLabel sx={{ ...labelStyle }} htmlFor="status">
+            Status
+           </InputLabel>
+          <Select
+            fullWidth
+            labelId="demo-simple-select-required-label"
+            name="status"
+            id="status_"
+            value={userArray.status}
+            label="Status"
+            onChange={onChangeHandler}
+          >
+            <MenuItem value="hold">Hold</MenuItem>
+            <MenuItem value="Active">Active</MenuItem>
+          </Select>
+        </FormControl>
+  
+       {ValidationError.status && <span className="alert alert-danger" id="status">{ValidationError.status}</span>}
           </Grid>
           <Grid item lg={6} sx={{ pt: "8px !important" }}>
             <InputLabel sx={{ ...labelStyle }} htmlFor="password">
@@ -168,12 +228,13 @@ const onChangeHandler=(e)=>{
             <TextField
               fullWidth
               size="small"
+              type="password"
               name="password"
-              id="password"
-              value="***************"
+              id="password_"
+              value={userArray.password}
               onChange={onChangeHandler}
-              placeholder="***************"
             />
+       {ValidationError.password && <span className="alert alert-danger" id="password">{ValidationError.password}</span>}
           </Grid>
           <Grid item lg={6} sx={{ pt: "8px !important" }}>
             <InputLabel sx={{ ...labelStyle }} htmlFor="confirm-password">
@@ -182,12 +243,13 @@ const onChangeHandler=(e)=>{
             <TextField
               fullWidth
               size="small"
+              type="password"
               name="confirmPassword"
-              id="confirm-password"
-              value="***************"
+              id="confirm_password"
+              value={userArray.confirmPassword}
               onChange={onChangeHandler}
-              placeholder="***************"
             />
+       {ValidationError.confirmPassword && <span className="alert alert-danger" id="confirmPassword">{ValidationError.confirmPassword}</span>}
           </Grid>
         </Grid>
       </DialogContent>
@@ -209,7 +271,7 @@ const onChangeHandler=(e)=>{
           Cancel
         </Button>
         <Button
-          onClick={openSubmit}
+          onClick={submiHandling}
           sx={{
             background:
               "linear-gradient(99.32deg, #B4CD93 7.91%, #427A5B 88.96%)",

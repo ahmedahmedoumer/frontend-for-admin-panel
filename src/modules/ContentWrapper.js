@@ -50,6 +50,8 @@ export default function ContentWrapper({ children }) {
   const ref = useRef(null);
   const notificationRef = useRef(null);
   const userData = useSelector((state)=>state);
+  const [updateUserData,setUpdateUserData]=useState(null);
+  const [updateUserValidation,setUpdateUserValidation]=useState(null);
   const [title,setTitle]=useState("Are you sure you want to Update the Profile ?");
   const [submitText,setSubmitText]=useState("Yes Update");
   const dispatch=useDispatch();
@@ -566,7 +568,7 @@ checkAuthenticated();
                 ml: 2.2,
               }}
             >
-              Welcome back, Leo
+              Welcome back, {userData.user.firstName}
             </Typography>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", pt: 1 }}>
@@ -589,12 +591,12 @@ checkAuthenticated();
                   fontSize: "16px",
                 }}
               >
-                Leonardo Lavi
+              {userData.user.firstName+"   "}
               </Typography>
               <Typography
                 sx={{ color: "#B8B8B8", fontWeight: 400, fontSize: "12px" }}
               >
-                Leonardo1@gmail.com
+              {userData.user.email}
               </Typography>
             </Box>
           </Box>
@@ -616,6 +618,8 @@ checkAuthenticated();
         <EditUserDialog
           openSubmit={() => setSubmitDialog(true)}
           open={openDialog}
+          ValidationData={updateUserValidation}
+          setUpdateUserData={setUpdateUserData}
           onClose={() => setOpenDialog(false)}
         />
         <AreYouSureDialog
@@ -623,6 +627,7 @@ checkAuthenticated();
           onClose={() => setSubmitDialog(false)}
           title={title}
           submitText={submitText}
+          updateUserData={updateUserData}
           submitIcon={submitIcon}
           submit={() => setOpenDialog(false)}
         />
