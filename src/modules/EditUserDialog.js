@@ -11,6 +11,7 @@ import {
   Button,
   Box,
   IconButton,
+  CloudUpload,
   MenuItem,
   FormControl,
   FormHelperText,
@@ -23,6 +24,21 @@ import { POPPINS } from "../utils/config";
 import photo from "../assets/images/photo.svg";
 // import Select from "../components/Select";
 export default function EditUserDialog(props) {
+
+  const [file, setFile] = useState(null);
+  
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+  
+  const handleDrop = (event) => {
+    event.preventDefault();
+    setFile(event.dataTransfer.files[0]);
+  };
+  
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
 
 const { open, onClose, openSubmit, submitText,setUpdateUserData,ValidationData } = props;
 // const ValidationError=useSelector(state=>state);
@@ -81,7 +97,6 @@ const submiHandling=async()=>{
       confirmPassword:error.response.data.errors.confirmPassword,
     });
   });
-
 }
   return (
     <Dialog
@@ -100,17 +115,17 @@ const submiHandling=async()=>{
       <DialogTitle>
         <Box display="flex" justifyContent="center" alignItems="center">
           <Avatar sx={{ width: 102, height: 102 }} />
-          <IconButton
-            sx={{
-              mt: 4,
-              ml: -4,
-              background: "#fff",
-              width: 48,
-              height: 48,
-            }}
-          >
-            <img src={photo} alt="upload" />
+          <div onDrop={handleDrop} onDragOver={handleDragOver}>
+          <IconButton component="label">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              style={{ display: 'none' }}
+            />
           </IconButton>
+          <p>Drag and drop an image file here, or click to select a file from your computer.</p>
+        </div>
           <Typography
             sx={{ fontWeight: 500, fontSize: "20px", ml: 1.5, ...POPPINS }}
           >

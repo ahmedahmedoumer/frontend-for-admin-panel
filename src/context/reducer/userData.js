@@ -1,4 +1,4 @@
-import { SET_lOGIN_ERROR,LOGIN_USER,SET_DASHBOARD_DATA,SET_VALIDATION_ERROR,SET_ALERT_MESSAGE} from "../actionTypes/actionTypes";
+import { SET_lOGIN_ERROR,LOGIN_USER,SET_DASHBOARD_DATA,SET_VALIDATION_ERROR,SET_ALERT_MESSAGE,SET_ALL_USERS_DATA} from "../actionTypes/actionTypes";
 
 const initialState = {
   user:[],
@@ -8,6 +8,7 @@ const initialState = {
   dashboard_data:[],
   validation_error:[],
   alert_message:null,
+  all_users_data:[],
 };
 
 export const userData = (state = initialState, action) => {
@@ -31,7 +32,11 @@ export const userData = (state = initialState, action) => {
       case SET_ALERT_MESSAGE:
           return {
             ...state,alert_message:action.payload,
-          }   
+          }  
+      case SET_ALL_USERS_DATA:
+              return {
+                ...state,all_users_data:action.payload,
+              }
     default:
       return state;
   }

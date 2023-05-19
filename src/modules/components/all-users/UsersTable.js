@@ -17,9 +17,36 @@ import user6 from "../../../assets/images/users/user6.png";
 import planner from "../../../assets/images/users/planner.svg";
 import creator from "../../../assets/images/users/creator.png";
 import view from "../../../assets/images/view.svg";
+import axios from 'axios';
+import { useEffect } from "react";
+import { useDispatch,useSelector } from "react-redux";
 import Pagination from "../../Pagination";
+import { SET_ALL_USERS_DATA } from "../../../context/actionTypes/actionTypes";
 
 export default function UsersTable() {
+const Dispatch=useDispatch();
+const Selector=useSelector(state=>state.all_users_data);
+
+   useEffect(()=>{
+    getAllUsers();
+   },[]);
+   const getAllUsers=async()=>{
+        const fetch=await axios.get('http://localhost:8000/api/all-users',{
+          headers:{
+            'Authorization':'Bearer '+ localStorage.getItem('token'),
+          }
+        })
+        .then(function(response){
+          console.log(response.data);
+           Dispatch({
+            type:SET_ALL_USERS_DATA,
+            payload:response.data,
+           })
+        })
+        .catch(function(error){
+          console.log(error);
+        });
+   }
   const tableColumns = [
     <TableCell key="name">User Name</TableCell>,
     <TableCell key="status">Creation Status</TableCell>,
@@ -27,7 +54,7 @@ export default function UsersTable() {
     <TableCell key="planner">Planner</TableCell>,
     <TableCell key="creator">Creator</TableCell>,
   ];
-
+const dataA=Selector;
   const data = [
     {
       img: user1,
@@ -161,7 +188,7 @@ export default function UsersTable() {
           <TableRow>{tableColumns}</TableRow>
         </TableHead>
         <TableBody>
-          {data.map((item, index) => (
+          {dataA.map((item, index) => (
             <RowItem key={index} item={item} />
           ))}
         </TableBody>
@@ -187,21 +214,21 @@ function RowItem(props) {
             width: "100%",
           }}
         >
-          <img src={item.img} alt={item.name} />
-          <Typography sx={{ ml: 2 }}>{item.name}</Typography>
+          <img src='/ahmed/oumer.jpg' alt={""} />
+          <Typography sx={{ ml: 2 }}>{item.firstName}</Typography>
         </Box>
       </TableCell>
       <TableCell>
         <Box
           sx={{
-            background: STATUS_BG_COLOR[item.status],
-            color: STATUS_COLOR[item.status],
+            background: STATUS_BG_COLOR[item.creationStatus],
+            color: STATUS_COLOR[item.creationStatus],
             width: "92px",
             margin: "0 auto",
             borderRadius: "5px",
           }}
         >
-          <Typography>{STATUS_MESSAGE[item.status]}</Typography>
+          <Typography>{STATUS_MESSAGE[item.creationStatus]}</Typography>
         </Box>
       </TableCell>
       <TableCell>
@@ -215,8 +242,8 @@ function RowItem(props) {
             justifyContent: "center",
           }}
         >
-          <img src={item.planner.img} alt={item.planner.img} />
-          <Typography sx={{ ml: 2 }}>{item.planner.name}</Typography>
+          <img src='/ahmed/oumer.jpg' alt=''/>
+          <Typography sx={{ ml: 2 }}>{item.planner.firstName}</Typography>
         </Box>
       </TableCell>
       <TableCell>
@@ -227,8 +254,8 @@ function RowItem(props) {
             justifyContent: "center",
           }}
         >
-          <img src={item.creator.img} alt={item.creator.name} />
-          <Typography sx={{ ml: 2, mr: 3 }}>{item.creator.name}</Typography>
+          <img src='/ahmed/oumer.jpg' alt={''} />
+          <Typography sx={{ ml: 2, mr: 3 }}>{item.designer.firstName}</Typography>
           <img src={view} alt="view icon" />
         </Box>
       </TableCell>

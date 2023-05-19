@@ -3,7 +3,7 @@ import { POPPINS } from "../../../utils/config";
 import chartIcon from "../../../assets/images/Chart.png";
 import { useSelector } from "react-redux";
 
-export default function dashboardChartOne() {
+export default function DashboardChartOne() {
   const curentProject=useSelector((state)=>state);
   console.log(curentProject);
   return (

@@ -4,7 +4,7 @@ import userIcon from "../../../assets/images/userIcon.svg";
 import { useSelector } from "react-redux";
 
 export default function UserCard() {
-const user=useSelector(state=>state.user);
+const user=useSelector(state=>state.user) || null;
   return (
     <Card
       sx={{

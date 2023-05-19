@@ -23,6 +23,7 @@ import NotificationPopover from "./NotificationPopover";
 import { LOGIN_USER,GET_LOGIN_USER } from '../context/actionTypes/actionTypes';
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
 import {
   DashboardIcon,
   AllUsersIcon,
@@ -58,6 +59,7 @@ export default function ContentWrapper({ children }) {
   const Navigate=useNavigate();
 
   const handleOpenDialog = async() => {
+
     setIsOpen(false);
     setOpenDialog(true);
   };
@@ -75,7 +77,7 @@ export default function ContentWrapper({ children }) {
           type:LOGIN_USER,
           payload:response.data,
          });
-         Navigate('/dashboard');
+         currentPath.pathname==='/login' ? Navigate('/dashboard'):Navigate(currentPath.pathname);
       })
       .catch(function(error){
         console.log(error);
