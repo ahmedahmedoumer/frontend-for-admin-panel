@@ -4,13 +4,34 @@ import ViewContainer from "../../modules/ViewContainer";
 import plusIcon from "../../assets/images/plus.svg";
 import ViewDate from "../../modules/ViewDate";
 import TeamMembersTable from "../../modules/components/team-members/TeamMembersTable";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import EditUserDialog from "../../modules/EditUserDialog";
 import AreYouSureDialog from "../../modules/components/AreYouSureDialog";
-
+import axios from 'axios'
 export default function TeamMembers() {
+
+  const [teamMembers,setTeamMembers]=useState([]);
   const [openDialog, setOpenDialog] = useState({});
   const [submitDialog, setSubmitDialog] = useState({});
+  const [currntPage,setCurrentPage]=useState(1);
+  const perPage=6;
+  useEffect(()=>{
+    getTeamMembersData();
+  },[]);
+   
+  const getTeamMembersData=async()=>{
+    const fetch=await axios.get(`http://localhost:8000/api/all-team-members?perPage=${perPage}&currentPage=${currntPage}`,{
+      headers:{
+        'Authorization':'Bearer '+localStorage.getItem('token'),
+      },
+    })
+    .then(function(response){
+      console.log(response.data);
+    })
+    .catch(function(error){
+      console.log(error);
+    });
+  }
 
   return (
     <ViewContainer>

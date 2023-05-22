@@ -18,30 +18,36 @@ import planner from "../../../assets/images/users/planner.svg";
 import creator from "../../../assets/images/users/creator.png";
 import view from "../../../assets/images/view.svg";
 import axios from 'axios';
-import { useEffect } from "react";
+import { useEffect,useState } from 'react';
 import { useDispatch,useSelector } from "react-redux";
 import Pagination from "../../Pagination";
 import { SET_ALL_USERS_DATA } from "../../../context/actionTypes/actionTypes";
 
 export default function UsersTable() {
-const Dispatch=useDispatch();
-const Selector=useSelector(state=>state.all_users_data);
+  const [userData,setUserData]=useState([]);
+  const [currentPage,setCurrentPage]=useState(1);
+  const [pageSize,setPageSize]=useState(null);
+  const perPage=7;
+  const Dispatch=useDispatch();
+  const Selector=useSelector(state=>state.all_users_data);
 
    useEffect(()=>{
     getAllUsers();
-   },[]);
+   },[currentPage]);
    const getAllUsers=async()=>{
-        const fetch=await axios.get('http://localhost:8000/api/all-users',{
+        const fetch=await axios.get(`http://localhost:8000/api/all-users?perPage=${perPage}&currentPage=${currentPage}`,{
           headers:{
             'Authorization':'Bearer '+ localStorage.getItem('token'),
           }
         })
         .then(function(response){
-          console.log(response.data);
-           Dispatch({
-            type:SET_ALL_USERS_DATA,
-            payload:response.data,
-           })
+          console.log(response.data.last_page);
+          setPageSize(response.data.last_page);
+          setUserData(response.data.data);
+          //  Dispatch({
+          //   type:SET_ALL_USERS_DATA,
+          //   payload:response.data,
+          //  })
         })
         .catch(function(error){
           console.log(error);
@@ -54,8 +60,9 @@ const Selector=useSelector(state=>state.all_users_data);
     <TableCell key="planner">Planner</TableCell>,
     <TableCell key="creator">Creator</TableCell>,
   ];
-const dataA=Selector;
-  const data = [
+// const data=userData;
+console.log(userData);
+  const dataA = [
     {
       img: user1,
       name: "Omar",
@@ -188,13 +195,14 @@ const dataA=Selector;
           <TableRow>{tableColumns}</TableRow>
         </TableHead>
         <TableBody>
-          {dataA.map((item, index) => (
+          {userData.map((item, index) => (
+        
             <RowItem key={index} item={item} />
           ))}
         </TableBody>
       </Table>
       <Box sx={{ ml: 4, mb: 4 }}>
-        <Pagination />
+        <Pagination pageSize={pageSize} setCurrentPage={setCurrentPage}/>
       </Box>
     </Card>
   );
@@ -228,7 +236,7 @@ function RowItem(props) {
             borderRadius: "5px",
           }}
         >
-          <Typography>{STATUS_MESSAGE[item.creationStatus]}</Typography>
+          <Typography>{STATUS_MESSAGE["notActive"]}</Typography>
         </Box>
       </TableCell>
       <TableCell>

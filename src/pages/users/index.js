@@ -20,82 +20,116 @@ import linkedin from "../../assets/images/social/linkedin.svg";
 import tiktok from "../../assets/images/social/tiktok.svg";
 import { POPPINS } from "../../utils/config";
 import ViewDate from "../../modules/ViewDate";
-import { useState } from "react";
+import Pagination from "../../modules/Pagination";
+import { useEffect, useState } from "react";
+import axios from 'axios';
+import moment from 'moment';
 import CreateAndUpdateDialog from "../../modules/components/users/CreateAndUpdateDialog";
 import AreYouSureDialog from "../../modules/components/AreYouSureDialog";
 import UploadPhotoDialog from "../../modules/components/users/UploadPhotoDialog";
+import { useDispatch,useSelector } from "react-redux";
+import { SET_ALL_USERS_DATA } from "../../context/actionTypes/actionTypes";
 
 export default function Users() {
   const [openDialog, setOpenDialog] = useState({});
   const [openSubmitDialog, setSubmitOpenDialog] = useState({});
   const [uploadOpenDialog, setUploadOpenDialog] = useState(false);
+  const [allUsers,setAllUsers]=useState([]);
+  const Dispatch=useDispatch();
+  const Selector=useSelector(state=>state);
+  const [perPage,setPerPage]=useState(1);
+  const [pageSize,setPageSize]=useState(0);
+  const [currentPage,setCurrentPage]=useState(1);
 
-  console.log(uploadOpenDialog);
-
+  useEffect(()=>{
+    setAllUsers(Selector.all_users_data);
+    users();
+  },[pageSize,currentPage,perPage]);
+  const users=async()=>{
+    const usersData=await axios.get(`http://localhost:8000/api/all-users?perPage=${perPage}&currentPage=${currentPage}`,{
+      headers:{
+        'Authorization':'Bearer '+localStorage.getItem('token'),
+      }
+    })
+    .then(function(response){
+      const data=response.data.data[0];
+      console.log(data);
+      Dispatch({
+        type:SET_ALL_USERS_DATA,
+        payload:data,
+      });
+      setPageSize(response.data.last_page);
+    })
+    .catch(function(error){
+      console.log(error.response);
+    })
+  }
+    console.log(allUsers);
+  // console.log(uploadOpenDialog);
   const userData = [
     {
       label: "Email",
-      value: "UI/UX designer",
+      value: allUsers.email || null,
     },
     {
       label: "Phone Number",
-      value: "+20123123123",
+      value: allUsers.phone|| null,
     },
     {
       label: "Whatsapp",
-      value: "+20123123123",
+      value: allUsers.whatsapp|| null,
     },
     {
       label: "Adress",
-      value: "omar123@abc.com",
+      value: allUsers.address|| null,
     },
     {
       label: "Location",
-      value: "www.Insagram.com/",
+      value: allUsers.location|| null,
     },
     {
       label: "Start Date",
-      value: "www.Insagram.com/",
+      value: moment(allUsers.created_at).format('MMMM Do YYYY')|| null,
     },
     {
       label: "End Date",
-      value: "www.Insagram.com/",
+      value: moment(allUsers.updated_at).format('MMMM Do YYYY')|| null,
     },
     {
       label: "Status",
-      value: "Active",
+      value: allUsers.creationStatus|| null,    
     },
   ];
 
   const userSocialData = [
     {
       label: "Co. Name",
-      value: "UI/UX designer",
+      value: (allUsers.brands_company)?(allUsers.brands_company.companyName):null,    
     },
     {
       label: "Co. Email",
-      value: "+20123123123",
+      value:(allUsers.brands_company)?(allUsers.brands_company.email):null,
     },
     {
       label: "Industry",
-      value: "+20123123123",
+      value: "+20123123123"|| null,
     },
     {
       label: "Co. Website",
-      value: "omar123@abc.com",
+      value: (allUsers.brands_company)?(allUsers.brands_company.companyWebsite):null,
     },
     {
       label: "Co. Number",
-      value: "www.Insagram.com/",
+      value:  (allUsers.brands_company)?(allUsers.brands_company.companyNumber):null,
     },
     {
       label: "Co. Description",
-      value: "www.Insagram.com/",
+      value: (allUsers.brands_company)?(allUsers.brands_company.companyDescription):null,
     },
   ];
   return (
     <ViewContainer>
-      <PageHeader title="Omar Ibrahim" description="User’s information" />
+      <PageHeader title={allUsers.firstName} description="User’s information" />
       <Card
         sx={{
           background: "#F2F2F2",
@@ -172,7 +206,7 @@ export default function Users() {
                     mb: "15px",
                   }}
                 >
-                  Omar Ibrahim
+                  {" "}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Box sx={{ mr: "16px" }}>
@@ -201,7 +235,7 @@ export default function Users() {
                         color: "#B3B3B3",
                       }}
                     >
-                      Cairo, Egypt
+                     { allUsers.location}
                     </Typography>
                   </Box>
                   <Button
@@ -332,6 +366,7 @@ export default function Users() {
             </Grid>
           </Grid>
         </Grid>
+       <Pagination pageSize={pageSize} setCurrentPage={setCurrentPage}/>
         <UploadPhotoDialog
           open={uploadOpenDialog}
           onClose={() => setUploadOpenDialog(false)}

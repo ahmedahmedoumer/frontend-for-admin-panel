@@ -1,5 +1,7 @@
 import usePagination from "@mui/material/usePagination";
 import { styled } from "@mui/material/styles";
+import axios from 'axios';
+import { useEffect, useState } from "react";
 
 const List = styled("ul")({
   listStyle: "none",
@@ -8,17 +10,50 @@ const List = styled("ul")({
   display: "flex",
 });
 
-export default function Pagination() {
+export default function Pagination(props) {
+  const {pageSize,setCurrentPage}=props;
+  const [pageData,setPageData]=useState(1);
   const { items } = usePagination({
-    count: 7,
+    count: pageSize,
   });
+
+
+
+  const fetchData=(page)=>{
+    setCurrentPage(page);
+    setPageData(page);
+  }
+  const handlePageType=(type)=>{
+    if(type==='previous'){
+      var pageNumber=pageData;
+      if(pageNumber!=1){
+           pageNumber--;
+      }
+      else{
+        pageNumber=pageNumber;
+      }
+      
+      fetchData(pageNumber);
+    }
+    else{
+      var pageNumber=pageData;
+      if(pageNumber!=pageSize){
+           pageNumber++;
+      }
+      else{
+        pageNumber=pageNumber;
+      }
+      
+      fetchData(pageNumber);
+    }
+  }
 
   return (
     <nav>
       <List>
         {items.map(({ page, type, selected, ...item }, index) => {
+          // console.log(items);
           let children = null;
-
           if (type === "start-ellipsis" || type === "end-ellipsis") {
             children = "…";
           } else if (type === "page") {
@@ -37,6 +72,7 @@ export default function Pagination() {
                   fontWeight: selected ? "bold" : undefined,
                 }}
                 {...item}
+                onClick={() => fetchData(page)}
               >
                 {page}
               </button>
@@ -53,6 +89,7 @@ export default function Pagination() {
                 }}
                 type="button"
                 {...item}
+                onClick={()=>handlePageType(type)}
               >
                 {type}
               </button>
