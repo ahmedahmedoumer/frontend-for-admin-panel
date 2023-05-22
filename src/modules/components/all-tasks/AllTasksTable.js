@@ -13,7 +13,7 @@ import Pagination from "../../Pagination";
 import view from "../../../assets/images/view.svg";
 
 export default function AllTasksTable(props) {
-  const { setSelectedUser, data } = props;
+  const { setSelectedUser, data ,setCurrentPage, pageSize,allTasks } = props;
 
   const tableColumns = [
     <TableCell key="name">User Name</TableCell>,
@@ -68,7 +68,7 @@ export default function AllTasksTable(props) {
         </TableBody>
       </Table>
       <Box sx={{ ml: 4, mb: 4 }}>
-        <Pagination />
+        <Pagination setCurrentPage={setCurrentPage} pageSize={pageSize} />
       </Box>
     </Card>
   );

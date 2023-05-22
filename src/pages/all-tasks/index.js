@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import AllTasksTable from "../../modules/components/all-tasks/AllTasksTable";
 import UserDetiail from "../../modules/components/all-tasks/UserDetiail";
 import PageHeader from "../../modules/PageHeader";
@@ -12,10 +12,34 @@ import user4 from "../../assets/images/users/user4.png";
 import user5 from "../../assets/images/users/user5.png";
 import user6 from "../../assets/images/users/user6.png";
 import arrow from "../../assets/images/arrow.svg";
+import axios from 'axios';
+import { useDispatch,useSelector } from "react-redux";
 
 export default function AllTasks() {
   const [selectedUser, setSelectedUser] = useState(null);
-
+  const [currentPage,setCurrentPage]=useState(1);
+  const [pageSize,setPageSize]=useState(null);
+  const [allTasks,setAllTasks]=useState([]);
+  const PerPage=6;
+  useEffect(()=>{
+    fetchAllTasks();
+  },[currentPage]);
+  const fetchAllTasks=async()=>{
+     const fetchData=await axios.get(`http://localhost:8000/api/all-tasks?perPage=${PerPage}&currentPage=${currentPage}`,{
+      headers:{
+        'Authorization':'Bearer ' + localStorage.getItem('token')
+      }
+     })
+     .then(function(response){
+      console.log(response.data.data);
+      setAllTasks(response.data.data);
+      setPageSize(response.data.last_page);
+     })
+     .catch(function(error){
+      console.log(error.response);
+     });
+  }
+const designData=allTasks;
   const data = [
     {
       img: user1,
@@ -121,7 +145,7 @@ export default function AllTasks() {
       {selectedUser ? (
         <UserDetiail />
       ) : (
-        <AllTasksTable data={data} setSelectedUser={setSelectedUser} />
+        <AllTasksTable data={data} setSelectedUser={setSelectedUser} pageSize={pageSize} setCurrentPage={setCurrentPage} />
       )}
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <ViewDate />

@@ -13,23 +13,26 @@ export default function TeamMembers() {
   const [teamMembers,setTeamMembers]=useState([]);
   const [openDialog, setOpenDialog] = useState({});
   const [submitDialog, setSubmitDialog] = useState({});
-  const [currntPage,setCurrentPage]=useState(1);
+  const [pageSize,setPageSize]=useState(1)
+  const [currentPage,setCurrentPage]=useState(1);
   const perPage=6;
   useEffect(()=>{
     getTeamMembersData();
-  },[]);
+  },[currentPage]);
    
   const getTeamMembersData=async()=>{
-    const fetch=await axios.get(`http://localhost:8000/api/all-team-members?perPage=${perPage}&currentPage=${currntPage}`,{
+    const fetch=await axios.get(`http://localhost:8000/api/all-team-members?perPage=${perPage}&currentPage=${currentPage}`,{
       headers:{
         'Authorization':'Bearer '+localStorage.getItem('token'),
       },
     })
     .then(function(response){
-      console.log(response.data);
+      console.log(response.data.data);
+      setTeamMembers(response.data.data);
+      setPageSize(response.data.last_page);
     })
     .catch(function(error){
-      console.log(error);
+      console.log(error.response);
     });
   }
 
@@ -63,7 +66,12 @@ export default function TeamMembers() {
           </Button>
         </Box>
       </Box>
-      <TeamMembersTable setOpenDialog={setOpenDialog} />
+      <TeamMembersTable
+       setOpenDialog={setOpenDialog} 
+       teamMembers={teamMembers} 
+       pageSize={pageSize} 
+       setCurrentPage={setCurrentPage}
+       />
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <ViewDate />
       </Box>

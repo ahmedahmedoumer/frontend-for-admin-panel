@@ -2,14 +2,37 @@ import { Box, Button } from "@mui/material";
 import PageHeader from "../../modules/PageHeader";
 import ViewContainer from "../../modules/ViewContainer";
 import plusIcon from "../../assets/images/plus.svg";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import DesignLibraryTable from "../../modules/components/design-library/DesignLibraryTable";
 import ViewDate from "../../modules/ViewDate";
 import AddNewDesignDialog from "../../modules/components/design-library/AddNewDesignDialog";
-
+import { useDispatch,useSelector } from "react-redux";
+import axios from 'axios';
 export default function DesignLibrary() {
   const [openDialog, setOpenDialog] = useState(false);
+  const [designLibrary,setDesignLibrary]=useState([]);
+  const [currentPage,setCurrentPage]=useState(1);
+  const [pageSize,setPageSize]=useState(null);
+  const perPage=9;
 
+  useEffect(()=>{
+    fetchDesignLibrary();
+  },[currentPage]);
+  const fetchDesignLibrary=async()=>{
+      const fetchData=await axios.get(`http://localhost:8000/api/design-library?perPage=${perPage}&currentPage=${currentPage}`,{
+        headers:{
+          'Authorization':'Bearer ' + localStorage.getItem('token'),
+        }
+      })
+      .then(function(response){
+          console.log(response.data.data);
+          setDesignLibrary(response.data.data);
+          setPageSize(response.data.last_page);
+      })
+      .catch(function(error){
+          console.log(error);
+      });
+  }
   return (
     <ViewContainer>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -41,7 +64,11 @@ export default function DesignLibrary() {
         </Box>
       </Box>
       <Box>
-        <DesignLibraryTable />
+        <DesignLibraryTable 
+        pageSize={pageSize} 
+        designLibrary={designLibrary} 
+        setCurrentPage={setCurrentPage} 
+       />
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <ViewDate />

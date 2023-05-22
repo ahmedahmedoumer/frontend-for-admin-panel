@@ -19,7 +19,7 @@ import setting from "../../../assets/images/setting.svg";
 import Pagination from "../../Pagination";
 
 export default function TeamMembersTable(props) {
-  const { setOpenDialog } = props;
+  const { setOpenDialog,teamMembers, pageSize,setCurrentPage } = props;
 
   const tableColumns = [
     <TableCell key="name">User Name</TableCell>,
@@ -29,7 +29,7 @@ export default function TeamMembersTable(props) {
     <TableCell key="status">Status</TableCell>,
     <TableCell key="date">Joining date</TableCell>,
   ];
-
+ const teamMembersData=teamMembers;
   const data = [
     {
       img: user1,
@@ -119,13 +119,13 @@ export default function TeamMembersTable(props) {
           <TableRow>{tableColumns}</TableRow>
         </TableHead>
         <TableBody>
-          {data.map((item, index) => (
+          {teamMembersData.map((item, index) => (
             <RowItem key={index} item={item} setOpenDialog={setOpenDialog} />
           ))}
         </TableBody>
       </Table>
       <Box sx={{ ml: 4, mb: 4 }}>
-        <Pagination />
+        <Pagination pageSize={pageSize} setCurrentPage={setCurrentPage} />
       </Box>
     </Card>
   );
@@ -145,8 +145,8 @@ function RowItem(props) {
             width: "100%",
           }}
         >
-          <img src={item.img} alt={item.name} />
-          <Typography sx={{ ml: 2 }}>{item.name}</Typography>
+          <img src={"contact.jpg"} alt={"sample data"} />
+          <Typography sx={{ ml: 2 }}>{item.firstName}</Typography>
         </Box>
       </TableCell>
       <TableCell>
@@ -156,7 +156,7 @@ function RowItem(props) {
         <Typography>{item.email}</Typography>
       </TableCell>
       <TableCell>
-        <Typography>{item.number}</Typography>
+        <Typography>{item.phone}</Typography>
       </TableCell>
       <TableCell>
         <Box
@@ -179,7 +179,8 @@ function RowItem(props) {
             justifyContent: "center",
           }}
         >
-          <Typography sx={{ mr: 2 }}>{item.date}</Typography>
+          <Typography sx={{ mr: 2 }}>{item.joiningDate
+          }</Typography>
           <IconButton
             onClick={() => setOpenDialog({ label: "edit", value: true })}
           >
@@ -192,16 +193,16 @@ function RowItem(props) {
 }
 
 const STATUS_COLOR = {
-  active: "#427A5B",
-  hold: "#3F3904",
+  Active: "#427A5B",
+  Hold: "#3F3904",
 };
 
 const STATUS_BG_COLOR = {
-  active: "#DEEDE5",
-  hold: "#FDF8CE",
+  Active: "#DEEDE5",
+  Hold: "#FDF8CE",
 };
 
 const STATUS_MESSAGE = {
-  active: "Active",
-  hold: "Hold",
+  Active: "Active",
+  Hold: "Hold",
 };

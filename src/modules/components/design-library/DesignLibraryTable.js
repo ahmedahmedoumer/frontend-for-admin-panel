@@ -6,7 +6,8 @@ import Pagination from "../../Pagination";
 import EditeCardDialog from "./EditCardDialog";
 import { useState } from "react";
 
-export default function DesignLibraryTable() {
+export default function DesignLibraryTable(props) {
+  const {pageSize,designLibrary,setCurrentPage }=props;
   const [openDialog, setOpenDialog] = useState(false);
 
   const data = [
@@ -88,7 +89,10 @@ export default function DesignLibraryTable() {
           submitText="Update"
         />
         <Box sx={{ ml: 4, mb: 4, mt: 3 }}>
-          <Pagination />
+          <Pagination
+           pageSize={pageSize}
+           setCurrentPage={setCurrentPage}
+           />
         </Box>
       </Grid>
     </Card>

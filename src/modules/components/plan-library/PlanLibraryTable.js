@@ -16,7 +16,7 @@ import settingIcon from "../../../assets/images/setting.svg";
 import { POPPINS } from "../../../utils/config";
 
 export default function PlanLibraryTable(props) {
-  const { setOpenDialog } = props;
+  const { setOpenDialog,pageSize,setCurrentPage,planLibrary } = props;
 
   const tableColumns = [
     <TableCell key="name">
@@ -33,7 +33,8 @@ export default function PlanLibraryTable(props) {
       <Typography sx={{ fontWeight: 500, fontSize: "18px" }}>Prompt</Typography>
     </TableCell>,
   ];
-
+  const planData=planLibrary;
+  console.log(planData);
   const data = [
     {
       title: "Planner",
@@ -91,13 +92,13 @@ export default function PlanLibraryTable(props) {
           <TableRow>{tableColumns}</TableRow>
         </TableHead>
         <TableBody>
-          {data.map((item, index) => (
+          {planData.map((item, index) => (
             <RowItem key={index} item={item} setOpenDialog={setOpenDialog} />
           ))}
         </TableBody>
       </Table>
       <Box sx={{ ml: 4, mb: 4 }}>
-        <Pagination />
+        <Pagination pageSize={pageSize} setCurrentPage={setCurrentPage}/>
       </Box>
     </Card>
   );
@@ -110,7 +111,7 @@ function RowItem(props) {
     <TableRow>
       <TableCell>
         <Typography sx={{ fontWeight: 500, fontSize: "20px", ...POPPINS }}>
-          {item.title}
+          {item.planTitle}
         </Typography>
       </TableCell>
       <TableCell>
@@ -126,7 +127,8 @@ function RowItem(props) {
           rows={2}
           multiline
           name={item.description}
-          placeholder={item.description}
+          placeholder={item.planDescription
+          }
         />
       </TableCell>
       <TableCell>
@@ -149,7 +151,7 @@ function RowItem(props) {
             rows={2}
             multiline
             name={item.prompt}
-            placeholder={item.prompt}
+            placeholder={item.planPrompt}
           />
           <IconButton>
             <img src={promptIcon} alt="promptIcon" />
