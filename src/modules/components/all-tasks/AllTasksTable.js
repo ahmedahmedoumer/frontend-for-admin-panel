@@ -11,9 +11,10 @@ import {
 } from "@mui/material";
 import Pagination from "../../Pagination";
 import view from "../../../assets/images/view.svg";
+import moment from 'moment';
 
 export default function AllTasksTable(props) {
-  const { setSelectedUser, data ,setCurrentPage, pageSize,allTasks } = props;
+  const { setSelectedUser, data ,setCurrentPage, pageSize } = props;
 
   const tableColumns = [
     <TableCell key="name">User Name</TableCell>,
@@ -89,11 +90,11 @@ function RowItem(props) {
             width: "100%",
           }}
         >
-          <img src={item.img} alt={item.name} />
+          <img src={item.img} alt={item.firstName} />
           <Typography
             sx={{ ml: 2, fontSize: "16px", fontWeight: 500, color: "#808080" }}
           >
-            {item.name}
+            {item.firstName}
           </Typography>
         </Box>
       </TableCell>
@@ -106,14 +107,14 @@ function RowItem(props) {
             fontWeight: 500,
           }}
         >
-          {item.industry}
+          {item.brands_company}
         </Typography>
       </TableCell>
       <TableCell>
         <Box
           sx={{
-            background: STATUS_BG_COLOR[item.status],
-            color: STATUS_COLOR[item.status],
+            background: STATUS_BG_COLOR[item.creationStatus],
+            color: STATUS_COLOR[item.creationStatus],
             width: "92px",
             margin: "0 auto",
             fontWeight: 300,
@@ -121,21 +122,17 @@ function RowItem(props) {
             borderRadius: "5px",
           }}
         >
-          <Typography>{STATUS_MESSAGE[item.status]}</Typography>
+          <Typography>{item.creationStatus}</Typography>
         </Box>
       </TableCell>
       <TableCell>
-        {item.recievedTime.map((time) => (
-          <Typography>{time}</Typography>
-        ))}
+          <Typography>{moment(item.created_at).format('MMMM Do YYYY')}</Typography>
       </TableCell>
       <TableCell>
-        {item.submitDate.map((date) => (
-          <Typography>{date}</Typography>
-        ))}
+          <Typography>{moment(item.updated_at).format('MMMM Do YYYY')}</Typography>
       </TableCell>
       <TableCell>
-        <IconButton onClick={() => setSelectedUser(item.name)}>
+        <IconButton onClick={() => setSelectedUser(item.firstName)}>
           <img src={view} alt="view" />
         </IconButton>
       </TableCell>

@@ -21,7 +21,7 @@ import Pagination from "../../Pagination";
 import view from "../../../assets/images/view.svg";
 
 export default function ReportsTable(props) {
-  const { setSelectedUser } = props;
+  const { setSelectedUser ,reports} = props;
 
   const tableColumns = [
     <TableCell key="name">User Name</TableCell>,
@@ -31,7 +31,7 @@ export default function ReportsTable(props) {
     <TableCell key="status">Submit date</TableCell>,
     <TableCell key="date">View</TableCell>,
   ];
-
+const reportData=reports;
   const data = [
     {
       img: user1,

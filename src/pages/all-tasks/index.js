@@ -16,6 +16,8 @@ import axios from 'axios';
 import { useDispatch,useSelector } from "react-redux";
 
 export default function AllTasks() {
+  const Dispatch=useDispatch();
+  const Selector=useSelector(state=>state);
   const [selectedUser, setSelectedUser] = useState(null);
   const [currentPage,setCurrentPage]=useState(1);
   const [pageSize,setPageSize]=useState(null);
@@ -34,12 +36,16 @@ export default function AllTasks() {
       console.log(response.data.data);
       setAllTasks(response.data.data);
       setPageSize(response.data.last_page);
+      // Disapatch({
+      //   type:
+      // })
+
      })
      .catch(function(error){
       console.log(error.response);
      });
   }
-const designData=allTasks;
+const taskData=allTasks;
   const data = [
     {
       img: user1,
@@ -145,7 +151,7 @@ const designData=allTasks;
       {selectedUser ? (
         <UserDetiail />
       ) : (
-        <AllTasksTable data={data} setSelectedUser={setSelectedUser} pageSize={pageSize} setCurrentPage={setCurrentPage} />
+        <AllTasksTable data={taskData} setSelectedUser={setSelectedUser} pageSize={pageSize} setCurrentPage={setCurrentPage} />
       )}
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <ViewDate />
