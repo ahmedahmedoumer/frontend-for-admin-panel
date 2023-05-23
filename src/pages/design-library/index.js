@@ -25,12 +25,12 @@ export default function DesignLibrary() {
         }
       })
       .then(function(response){
-          console.log(response.data.data);
+          // console.log(response.data.data);
           setDesignLibrary(response.data.data);
           setPageSize(response.data.last_page);
       })
       .catch(function(error){
-          console.log(error);
+          // console.log(error);
       });
   }
   return (

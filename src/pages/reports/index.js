@@ -6,35 +6,37 @@ import PageHeader from "../../modules/PageHeader";
 import ViewContainer from "../../modules/ViewContainer";
 import ViewDate from "../../modules/ViewDate";
 import axios from 'axios';
+import { SET_REPORTS_DATA } from "../../context/actionTypes/actionTypes";
 import { useDispatch,useSelector } from "react-redux";
 export default function Reports() {
   const Disapatch=useDispatch();
-  const Selector=useSelector(state=state)
+  const Selector=useSelector((state)=>state)
   const [selectedUser, setSelectedUser] = useState(false);
   const [currentPage,setCurrentPage]=useState(1);
   const [pageSize,setPageSize]=useState(null);
-  const [reports,setReports]=useState([]);
   const perPage=5;
-
-  console.log(selectedUser);
-  useEffect(()=>{
-    fetchReport();
-  },[currentPage]);
   const fetchReport=async()=>{
-    const fetchData=await axios.get(`http://localhost:8000/api/reports?perPage=${perPage}&currentPage=${currentPage}`,{
+    await axios.get(`http://localhost:8000/api/reports?perPage=${perPage}&currentPage=${currentPage}`,{
       headers:{
         'Authorization':'Bearer ' + localStorage.getItem('token'),
       }
     })
     .then(function(response){
-      console.log(response.data);
-      setReports(response.data.data);
+      Disapatch({
+        type:SET_REPORTS_DATA,
+        payload:response.data.data,
+      });
       setPageSize(response.data.last_page);
       })
     .catch(function(error){
       console.log(error.response);
-    })
+    });
   }
+  const data=Selector.reports_data;
+  useEffect(()=>{
+    fetchReport();
+  },[pageSize]);
+ 
   return (
     <ViewContainer>
       <PageHeader
@@ -45,7 +47,7 @@ export default function Reports() {
       {selectedUser ? (
         <UserDetail />
       ) : (
-        <ReportsTable setSelectedUser={setSelectedUser} reports={reports} />
+        <ReportsTable setSelectedUser={setSelectedUser} pageSize={pageSize} setCurrentPage={setCurrentPage} />
       )}
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <ViewDate />

@@ -62,6 +62,26 @@ export default function UsersTable() {
   ];
 // const data=userData;
 console.log(userData);
+//  const dataA=userData.map((item)=>({
+//       img:user1,
+//       name:item.length!=0?item.firstName:null,
+//       status: item.length!=0?item.creationStatus:null,
+//       email:  item.length!=0?item.email:null,
+//       planner:item.planner.length!=0?{
+//         img: planner,
+//         name: item.planner.firstName,
+//       }:{
+//         img: planner,
+//         name: " ",
+//       },
+//       creator: item.designer.length!=0?{
+//         img: creator,
+//         name:item.designer.firstName,
+//       }:{
+//         img: creator,
+//         name: " ",
+//       },
+//  }))
   const dataA = [
     {
       img: user1,

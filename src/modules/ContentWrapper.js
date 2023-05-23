@@ -72,7 +72,7 @@ export default function ContentWrapper({ children }) {
         }
       })
       .then(function(response){
-        console.log(response);
+        // console.log(response);
          dispatch({
           type:LOGIN_USER,
           payload:response.data,
@@ -80,12 +80,12 @@ export default function ContentWrapper({ children }) {
          currentPath.pathname==='/login' ? Navigate('/dashboard'):Navigate(currentPath.pathname);
       })
       .catch(function(error){
-        console.log(error);
+        // console.log(error);
         Navigate('/login');
       });
         
     }catch (error){
-         console.log(error);
+        //  console.log(error);
     }
 }
 checkAuthenticated();

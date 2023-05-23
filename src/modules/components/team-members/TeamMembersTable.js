@@ -25,7 +25,7 @@ export default function TeamMembersTable(props) {
     <TableCell key="name">User Name</TableCell>,
     <TableCell key="title">Title</TableCell>,
     <TableCell key="email">Email</TableCell>,
-    <TableCell key="status">Number</TableCell>,
+    <TableCell key="number">Number</TableCell>,
     <TableCell key="status">Status</TableCell>,
     <TableCell key="date">Joining date</TableCell>,
   ];

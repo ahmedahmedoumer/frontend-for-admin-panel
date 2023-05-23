@@ -25,12 +25,12 @@ const fetchPlanLibrary=async()=>{
         }
       })
       .then(function(response){
-         console.log(response.data.data);
+        //  console.log(response.data.data);
          setPlanLibrary(response.data.data);
          setPageSize(response.data.last_page);
       })
       .catch(function(error){
-         console.log(error.response.data);
+        //  console.log(error.response.data);
       });
 }
 

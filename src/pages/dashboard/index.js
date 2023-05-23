@@ -24,12 +24,12 @@ export default function Dashboard() {
       }
     })
     .then(function(response){
-      console.log(response.data);
+      // console.log(response.data);
             dispatch({
               type:SET_DASHBOARD_DATA,
               payload:response.data,
             });
-            console.log(selector.dashboard_data);
+            // console.log(selector.dashboard_data);
     })
     .catch(function(error){
           navigate('/login'); 

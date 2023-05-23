@@ -17,125 +17,45 @@ import user5 from "../../../assets/images/users/user5.png";
 import user6 from "../../../assets/images/users/user6.png";
 import team1 from "../../../assets/images/users/planner.svg";
 import team2 from "../../../assets/images/users/creator.png";
+import moment from "moment";
 import Pagination from "../../Pagination";
 import view from "../../../assets/images/view.svg";
+import { useSelector } from "react-redux";
+import { useState } from "react";
 
 export default function ReportsTable(props) {
-  const { setSelectedUser ,reports} = props;
-
+  const { setSelectedUser,pageSize,setCurrentPage} = props;
+   const Selector=useSelector((state)=>state);
   const tableColumns = [
     <TableCell key="name">User Name</TableCell>,
     <TableCell key="title">Team</TableCell>,
     <TableCell key="email">Status</TableCell>,
-    <TableCell key="status">Recieved Time</TableCell>,
+    <TableCell key="time">Recieved Time</TableCell>,
     <TableCell key="status">Submit date</TableCell>,
     <TableCell key="date">View</TableCell>,
   ];
-const reportData=reports;
-  const data = [
-    {
-      img: user1,
-      name: "Omar",
-      team: [
-        {
-          img: team1,
-          name: "Penny",
-        },
-        {
-          img: team2,
-          name: "Emy",
-        },
-      ],
-      recievedTime: ["22/04/2023 | 7:00 Am", "22/04/2023 | 7:00 Am"],
-      status: ["new", "approved"],
-      submitDate: ["22/04/2023 | 7:00 Am", "22/04/2023 | 7:00 Am"],
-    },
-    {
-      img: user2,
-      name: "Ahmed",
-      team: [
-        {
-          img: team1,
-          name: "Penny",
-        },
-        {
-          img: team2,
-          name: "Emy",
-        },
-      ],
-      recievedTime: ["22/04/2023 | 7:00 Am", "22/04/2023 | 7:00 Am"],
-      status: ["notYet", "pending"],
-      submitDate: ["22/04/2023 | 7:00 Am", "22/04/2023 | 7:00 Am"],
-    },
-    {
-      img: user3,
-      name: "Leo",
-      team: [
-        {
-          img: team1,
-          name: "Penny",
-        },
-        {
-          img: team2,
-          name: "Emy",
-        },
-      ],
-      recievedTime: ["22/04/2023 | 7:00 Am", "22/04/2023 | 7:00 Am"],
-      status: ["new", "approved"],
-      submitDate: ["22/04/2023 | 7:00 Am", "22/04/2023 | 7:00 Am"],
-    },
-    {
-      img: user4,
-      name: "Cris",
-      team: [
-        {
-          img: team1,
-          name: "Penny",
-        },
-        {
-          img: team2,
-          name: "Emy",
-        },
-      ],
-      recievedTime: ["22/04/2023 | 7:00 Am", "22/04/2023 | 7:00 Am"],
-      status: ["pending", "notYet"],
-      submitDate: ["22/04/2023 | 7:00 Am", "22/04/2023 | 7:00 Am"],
-    },
-    {
-      img: user5,
-      name: "Matheo",
-      team: [
-        {
-          img: team1,
-          name: "Penny",
-        },
-        {
-          img: team2,
-          name: "Emy",
-        },
-      ],
-      recievedTime: ["22/04/2023 | 7:00 Am", "22/04/2023 | 7:00 Am"],
-      status: ["new", "approved"],
-      submitDate: ["22/04/2023 | 7:00 Am", "22/04/2023 | 7:00 Am"],
-    },
-    // {
-    //   img: user6,
-    //   name: "Sergio",
-    //   team: [
-    //     {
-    //       img: team1,
-    //       name: "Penny",
-    //     },
-    //     {
-    //       img: team2,
-    //       name: "Emy",
-    //     },
-    //   ],
-    //   recievedTime: ["22/04/2023 | 7:00 Am", "22/04/2023 | 7:00 Am"],
-    //   status: ["new", "approved"],
-    //   submitDate: ["22/04/2023 | 7:00 Am", "22/04/2023 | 7:00 Am"],
-    // },
-  ];
+
+console.log(Selector.reports_data);
+const reportData=Selector.reports_data;
+// if(reportData.length!=0){
+  const reports=reportData.map((reportItem)=>({
+    img:user1,
+    name:reportItem.length!=0 ? reportItem.firstName:null,
+    team:[
+     {
+      img:team1,
+      name:reportItem.length!=0 ?reportItem.planner.firstName:null,
+     },
+     {
+       img:team2,
+       name:reportItem.length!=0 ?reportItem.designer.firstName:null,
+     },
+    ],
+    recievedTime:reportItem.length!=0  ? [moment(reportItem.planner.created_at).format('YYYY-MM-DD hh:mm:ss'),moment(reportItem.planner.created_at).format('YYYY-MM-DD hh:mm:ss')]:[null,null],
+    status: ["approved","pending"],
+    submitDate:reportData.length!=0  ? [moment(reportItem.designer.created_at).format('YYYY-MM-DD hh:mm:ss'), moment(reportItem.designer.created_at).format('YYYY-MM-DD hh:mm:ss')]:[null,null],
+    id:reportItem.length!=0 ?[reportItem.planner.id+'/'+reportItem.id,reportItem.designer.id+'/'+reportItem.id]:[null,null],
+  }));
 
   return (
     <Card
@@ -170,7 +90,7 @@ const reportData=reports;
           <TableRow>{tableColumns}</TableRow>
         </TableHead>
         <TableBody>
-          {data.map((item, index) => (
+          {reports.map((item, index) => (
             <RowItem
               key={index}
               item={item}
@@ -180,7 +100,7 @@ const reportData=reports;
         </TableBody>
       </Table>
       <Box sx={{ ml: 4, mb: 4 }}>
-        <Pagination />
+        <Pagination pageSize={pageSize} setCurrentPage={setCurrentPage}/>
       </Box>
     </Card>
   );
@@ -289,9 +209,13 @@ function RowItem(props) {
         ))}
       </TableCell>
       <TableCell>
+      {item.id.map((id,i)=>(
+        <Typography>
         <IconButton onClick={() => setSelectedUser(true)}>
-          <img src={view} alt="view" />
+          <img src={view} alt="view" id={id} />
         </IconButton>
+        </Typography>
+         ))}
       </TableCell>
     </TableRow>
   );
@@ -313,7 +237,7 @@ const STATUS_BG_COLOR = {
 
 const STATUS_MESSAGE = {
   new: "New",
-  approved: "Approved",
+  approved: "approved",
   notYet: "Not Yet",
   pending: "Pending",
 };

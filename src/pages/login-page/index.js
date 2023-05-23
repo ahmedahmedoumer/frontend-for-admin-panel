@@ -36,18 +36,18 @@ const dispatch = useDispatch();
        await axios.post("http://localhost:8000/api/login",{email,password})
        .then(function(response){
              if(response.data.status===200){
-                console.log("successfully loged in");
+                // console.log("successfully loged in");
                 localStorage.setItem('token',response.data.token);
                 dispatch({
                     type:LOGIN_USER,
                     payload:response.data.user,
                 });
-                console.log(User);
+                // console.log(User);
                 navigate('/dashboard');
              }
              else{
                 setAlert(response.data.message);
-                console.log(Alert);
+                // console.log(Alert);
              }
         })
        .catch((error)=>{
@@ -55,9 +55,9 @@ const dispatch = useDispatch();
             setError({ emailValidation:error.response.data.errors.email,
                        passwordValidation:error.response.data.errors.password
             });
-           console.log(Error);
+        //    console.log(Error);
         }
-        console.log(error);
+        // console.log(error);
         //   console.log(error.response.data.errors.email);
          
        });
