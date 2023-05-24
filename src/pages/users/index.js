@@ -33,6 +33,9 @@ import { SET_ALL_USERS_DATA } from "../../context/actionTypes/actionTypes";
 export default function Users() {
   const [openDialog, setOpenDialog] = useState({});
   const [openSubmitDialog, setSubmitOpenDialog] = useState({});
+  const [assignedValue,setAssignedValue]=useState(null);
+  const [designerId,setDesignerId]=useState(null);
+  const [plannerId,setPlannerId]=useState(null);
   const [uploadOpenDialog, setUploadOpenDialog] = useState(false);
   const [allUsers,setAllUsers]=useState([]);
   const Dispatch=useDispatch();
@@ -367,14 +370,13 @@ export default function Users() {
           </Grid>
         </Grid>
        <Pagination pageSize={pageSize} setCurrentPage={setCurrentPage}/>
-        <UploadPhotoDialog
-          open={uploadOpenDialog}
-          onClose={() => setUploadOpenDialog(false)}
-        />
+       
         {openDialog.label === "planner" && openDialog.value && (
           <CreateAndUpdateDialog
             title="Planner Assigned"
+            openDialog={openDialog.label}
             open={openDialog.value}
+            setAssignedValue={setAssignedValue}
             setSubmitOpenDialog={() =>
               setSubmitOpenDialog({
                 label: "planner",
@@ -387,7 +389,9 @@ export default function Users() {
         {openDialog.label === "designer" && openDialog.value && (
           <CreateAndUpdateDialog
             title="Designer Assigned"
+            openDialog={openDialog.label}
             open={openDialog.value}
+            setAssignedValue={setAssignedValue}
             setSubmitOpenDialog={() =>
               setSubmitOpenDialog({
                 label: "designer",
@@ -401,6 +405,9 @@ export default function Users() {
         {openSubmitDialog.label === "planner" && openSubmitDialog.value && (
           <AreYouSureDialog
             open={openSubmitDialog}
+            userID={allUsers.id}
+            assignedRole={openDialog.label}
+            assignedValue={assignedValue}
             onClose={() => setSubmitOpenDialog(false)}
             title="Are you sure you want to re-Assign the Planner ?"
             submitText="Yes, Re-Assign"
@@ -409,6 +416,9 @@ export default function Users() {
         {openSubmitDialog.label === "designer" && openSubmitDialog.value && (
           <AreYouSureDialog
             open={openSubmitDialog}
+            userID={allUsers.id}
+            assignedRole={openDialog.label}
+            assignedValue={assignedValue}
             onClose={() => setSubmitOpenDialog(false)}
             title="Are you sure you want to re-Assign the Designer ?"
             submitText="Yes, Re-Assign"

@@ -15,21 +15,62 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 import user1 from "../../../assets/images/dialogUser1.svg";
 import userSelectIcon from "../../../assets/images/users/user1.png";
 import user2 from "../../../assets/images/dialogUser2.svg";
 import { POPPINS } from "../../../utils/config";
 import ClearIcon from "@mui/icons-material/Clear";
-
+import axios from "axios";
+import { SET_DESIGNNER,SET_PLANNER } from "../../../context/actionTypes/actionTypes";
+import {useSelector,useDispatch} from "react-redux";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="left" ref={ref} {...props} />;
 });
 
 export default function CreateAndUpdateDialog(props) {
-  const { open, onClose, title, submit, setSubmitOpenDialog } = props;
+  const { open, onClose, title, submit, setSubmitOpenDialog,openDialog,setAssignedValue } = props;
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState();
+  const Selector=useSelector((state)=>state);
+  const userData=Selector.all_users_data;
+  const plannerData=Selector.planner_data;
+  const designnerData=Selector.designner_data;
+  const dataArray=openDialog;
+  // console.log(planner);
+  const Dispatch=useDispatch();
+   useEffect(()=>{
+        getAllPlannerAndDesigner();
+   },[]);
+   const planner=plannerData.map((planner)=>({
+    id:planner.id,
+    name:planner.firstName,
+    })); 
+    const designer=designnerData.map((designner)=>({
+        id:designner.id,
+        name:designner.firstName,   
+    }));
+   const getAllPlannerAndDesigner=async()=>{
+       const fetch=await axios.get('http://localhost:8000/api/users',{
+        headers:{
+          'Authorization':'Bearer '+ localStorage.getItem('token'),
+        },
+       })
+       .then(function(response){
+        console.log(response.data);
+        Dispatch({
+          type:SET_DESIGNNER,
+          payload:response.data.designner,
+        });
+        Dispatch({
+          type:SET_PLANNER,
+          payload:response.data.planner,
+        });
+       })
+       .catch(function(error){
+        console.log(error.response);
+       });
+   }
 
   return (
     <Dialog
@@ -65,7 +106,7 @@ export default function CreateAndUpdateDialog(props) {
                 ...POPPINS,
               }}
             >
-              Omar Ibrahim
+              {userData.length!=0 && userData.firstName }
             </Typography>
           </Box>
           <Box sx={{ mt: -5, mx: 1.5 }}>_ _ _</Box>
@@ -79,7 +120,7 @@ export default function CreateAndUpdateDialog(props) {
                 ...POPPINS,
               }}
             >
-              Emy
+            {userData.length!=0 && openDialog=='designer' ? userData.designer.firstName:userData.planner.firstName }
             </Typography>
           </Box>
         </Box>
@@ -95,7 +136,7 @@ export default function CreateAndUpdateDialog(props) {
                 fontSize: "13px",
               }}
             >
-              Want to Change the Planner?
+              Want to Change the {openDialog}?
             </Typography>
             <Typography
               sx={{ fontWeight: 500, fontSize: "9px", color: "#B8B8B8" }}
@@ -103,23 +144,6 @@ export default function CreateAndUpdateDialog(props) {
               Choose from the list below:
             </Typography>
           </Box>
-
-          {/* <TextField
-              fullWidth
-              onClick={() => setIsOpen(true)}
-              value={selectedItem?.title}
-              size="small"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => setIsOpen(false)}>
-                      <ClearIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              placeholder="Choose which planner you want to assign"
-            /> */}
           <Grid
             container
             alignItems="center"
@@ -136,27 +160,24 @@ export default function CreateAndUpdateDialog(props) {
                 flex: "1 !important",
                 overflowX: "hidden",
                 position: "static",
-              }}
-            >
+              }}>  
+              <Grid>
               <FormControl fullWidth sx={{ position: "static" }}>
-                <TextField
-                  fullWidth
-                  onClick={() => setIsOpen(true)}
-                  value={selectedItem?.title}
-                  size="small"
-                  sx={{
-                    ".MuiOutlinedInput-notchedOutline": {
-                      border: "none",
-                    },
-                  }}
-                  placeholder="Choose which planner you want to assign"
-                />
-              </FormControl>
-            </Grid>
+              <TextField fullWidth
+               onClick={() => setIsOpen(true)} 
+               value={selectedItem} size="small"  
+               placeholder={`Choose which ${openDialog} you want to assign`}
+                sx={{
+                  ".MuiOutlinedInput-notchedOutline": {
+                    border: "none",
+                  },}}/></FormControl>  
+              </Grid>       
+              </Grid>
+
             <Grid item>
               <IconButton
                 onClick={() => {
-                  setSelectedItem({ title: "" });
+                  setSelectedItem("");
                   setIsOpen(false);
                 }}
               >
@@ -164,12 +185,18 @@ export default function CreateAndUpdateDialog(props) {
               </IconButton>
             </Grid>
           </Grid>
+          
+
+
           {isOpen && (
-            <Box sx={{ background: "#fff", borderRadius: "12px", mt: 2, p: 1 }}>
+            <Box>
+            <Box  sx={{ background: "#fff", borderRadius: "12px", mt: 2, p: 1 }}>
+               {(openDialog=="designer"?designer:planner).map((option)=>(
               <Box
                 onClick={() => {
                   setIsOpen(false);
-                  setSelectedItem({ title: "Omar Ibrahim" });
+                  setSelectedItem(option.name);
+                  setAssignedValue(option.id);
                 }}
                 sx={{
                   display: "flex",
@@ -190,76 +217,17 @@ export default function CreateAndUpdateDialog(props) {
                     fontSize: "13px",
                   }}
                 >
-                  Omar Ibrahim
+                  {option.name}
                 </Typography>
                 <Typography
                   sx={{ color: "#B8B8B8", fontWeight: 500, fontSize: "10px" }}
                 >
-                  Planner
+                  {openDialog}
                 </Typography>
-              </Box>
-              <Box
-                onClick={() => {
-                  setIsOpen(false);
-                  setSelectedItem({ title: "Omar Ibrahim" });
-                }}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  mb: 1,
-                  pb: 1,
-                  cursor: "pointer",
-                  borderBottom: "1px solid #ccc",
-                }}
-              >
-                <img src={userSelectIcon} />
-                <Typography
-                  sx={{
-                    mr: 5,
-                    ml: 1,
-                    color: "#565656",
-                    fontWeight: 600,
-                    fontSize: "13px",
-                  }}
-                >
-                  Omar Ibrahim
-                </Typography>
-                <Typography
-                  sx={{ color: "#B8B8B8", fontWeight: 500, fontSize: "10px" }}
-                >
-                  Planner
-                </Typography>
-              </Box>
-              <Box
-                onClick={() => {
-                  setIsOpen(false);
-                  setSelectedItem({ title: "Omar Ibrahim" });
-                }}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <img src={userSelectIcon} />
-                <Typography
-                  sx={{
-                    mr: 5,
-                    ml: 1,
-                    color: "#565656",
-                    fontWeight: 600,
-                    fontSize: "13px",
-                  }}
-                >
-                  Omar Ibrahim
-                </Typography>
-                <Typography
-                  sx={{ color: "#B8B8B8", fontWeight: 500, fontSize: "10px" }}
-                >
-                  Planner
-                </Typography>
-              </Box>
-            </Box>
+                </Box>
+          ))}
+             </Box>
+             </Box>
           )}
         </Box>
       </DialogContent>

@@ -5,7 +5,9 @@ import { SET_lOGIN_ERROR,
   SET_ALERT_MESSAGE,
   SET_ALL_USERS_DATA,
   SET_ALL_TASKS_DATA,
-  SET_REPORTS_DATA} from "../actionTypes/actionTypes";
+  SET_REPORTS_DATA,
+  SET_PLANNER,
+  SET_DESIGNNER} from "../actionTypes/actionTypes";
 
 const initialState = {
   user:[],
@@ -18,6 +20,9 @@ const initialState = {
   all_users_data:[],
   all_tasks:[],
   reports_data:[],
+  planner_data:[],
+  designner_data:[],
+
 };
 
 export const userData = (state = initialState, action) => {
@@ -54,7 +59,22 @@ export const userData = (state = initialState, action) => {
         return {
           ...state,reports_data:action.payload,
         }
+        case SET_DESIGNNER:
+          return {
+            ...state,designner_data:action.payload,
+          }
+          case SET_PLANNER:
+            return {
+              ...state,planner_data:action.payload,
+            }
     default:
       return state;
   }
 };
+
+
+
+
+
+
+

@@ -6,21 +6,19 @@ import { useNavigate } from "react-router-dom";
 import { SET_ALERT_MESSAGE, SET_VALIDATION_ERROR,LOGIN_USER } from "../../context/actionTypes/actionTypes";
 
 export default function AreYouSureDialog(props) {
-  const { open, onClose, title, submitText, submit, submitIcon, openSnackbar,updateUserData } =props;
+  const { open, onClose, title, submitText, submit, submitIcon, openSnackbar,updateUserData,userID,assignedValue,assignedRole } =props;
    const Navigate=useNavigate();
    const Selector=useSelector(state=>state);
    const Dispatch=useDispatch();
   async function handleSubmit(){
     if (submit && submitText==="yes Logout") {
       submit();
-      console.log(localStorage.getItem('token'));
       const check=await axios.get('http://localhost:8000/api/logout', {
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('token')
         }
       })
       .then(function(response){
-        console.log(response.data);
         localStorage.removeItem('token');
         Dispatch({
           type:LOGIN_USER,
@@ -33,7 +31,6 @@ export default function AreYouSureDialog(props) {
       });
     }
     else if(submit && submitText=="yes Update"){
-            //  submit();
            const update=await axios.post('http://localhost:8000/api/update-profile',updateUserData,{
             headers:{
               'Authorization':'Bearer '+localStorage.getItem('token'),
@@ -41,11 +38,6 @@ export default function AreYouSureDialog(props) {
            })
            .then(function(response){
             submit();
-            console.log(response.data);
-          //  Dispatch({
-          //    type:LOGIN_USER,
-          //    payload:response.,
-          // });
            })
            .catch(function(error){
               Dispatch({
@@ -53,6 +45,19 @@ export default function AreYouSureDialog(props) {
                 payload:error.response,
               });
            });
+    }
+    else if( submitText=="Yes, Re-Assign"){
+         const reAssign=await axios.get(`http://localhost:8000/api/users/${assignedRole}/re-assigned?userID=${userID}&assignedValue=${assignedValue}`,{
+          headers:{
+            'Authorization':'Bearer '+localStorage.getItem('token'),
+          }
+         })
+         .then(function(response){
+               console.log(response.data);
+         })
+         .catch(function(error){
+          console.log(error.response);
+         });
     }
 
     if (openSnackbar) {

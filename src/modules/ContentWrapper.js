@@ -55,6 +55,7 @@ export default function ContentWrapper({ children }) {
   const [updateUserValidation,setUpdateUserValidation]=useState(null);
   const [title,setTitle]=useState("Are you sure you want to Update the Profile ?");
   const [submitText,setSubmitText]=useState("Yes Update");
+  const [isAuthenticated,setIsAuthenticated]=useState(false);
   const dispatch=useDispatch();
   const Navigate=useNavigate();
 
@@ -77,15 +78,17 @@ export default function ContentWrapper({ children }) {
           type:LOGIN_USER,
           payload:response.data,
          });
+         setIsAuthenticated(true);
          currentPath.pathname==='/login' ? Navigate('/dashboard'):Navigate(currentPath.pathname);
       })
       .catch(function(error){
         // console.log(error);
+        setIsAuthenticated(false);
         Navigate('/login');
       });
         
     }catch (error){
-        //  console.log(error);
+         console.log(error);
     }
 }
 checkAuthenticated();
@@ -93,7 +96,7 @@ checkAuthenticated();
 
   return (
       <Box>
-     { localStorage.getItem('token') && <Box sx={{ display: "flex" }}>
+     { isAuthenticated && (<Box sx={{ display: "flex" }}>
         <Drawer
           anchor="left"
           open
@@ -150,7 +153,7 @@ checkAuthenticated();
                       currentPath.pathname === "/dashboard"
                         ? "linear-gradient(99.32deg, #B4CD93 7.91%, #427A5B 88.96%)"
                         : "#F2F2F2",
-                    color:
+                      color:
                       currentPath.pathname === "/dashboard"
                         ? "#fff"
                         : "#808080",
@@ -570,7 +573,7 @@ checkAuthenticated();
                 ml: 2.2,
               }}
             >
-              Welcome back, {userData.user.firstName}
+              Welcome back, {userData.user.firstName ||null}
             </Typography>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", pt: 1 }}>
@@ -634,7 +637,7 @@ checkAuthenticated();
           submit={() => setOpenDialog(false)}
         />
       </Box>
-              }
+  )}
        <Container>
         <Box
           sx={{
