@@ -19,7 +19,7 @@ import setting from "../../../assets/images/setting.svg";
 import Pagination from "../../Pagination";
 
 export default function TeamMembersTable(props) {
-  const { setOpenDialog,teamMembers, pageSize,setCurrentPage } = props;
+const { setOpenDialog,teamMembers, pageSize,setCurrentPage,setEditorDialog,setUpdatedData } = props;
 
   const tableColumns = [
     <TableCell key="name">User Name</TableCell>,
@@ -31,12 +31,14 @@ export default function TeamMembersTable(props) {
   ];
  const teamMembersData=teamMembers;
   const data=teamMembersData.map((teamMembers)=>({
+    id:teamMembers.id,
     img: user1,
-    name: teamMembers.firstName,
+    firstName: teamMembers.firstName,
+    lastName: teamMembers.lastName,
     email: teamMembers.email,
     title: teamMembers.title,
     status: teamMembers.status,
-    number:teamMembers.phone,
+    phone:teamMembers.phone,
     date:teamMembers.created_at,
   }));   
   
@@ -74,7 +76,7 @@ export default function TeamMembersTable(props) {
         </TableHead>
         <TableBody>
           {data.map((item, index) => (
-            <RowItem key={index} item={item} setOpenDialog={setOpenDialog} />
+            <RowItem key={index} item={item} setOpenDialog={setOpenDialog} setEditorDialog={setEditorDialog} setUpdatedData={setUpdatedData} />
           ))}
         </TableBody>
       </Table>
@@ -86,7 +88,7 @@ export default function TeamMembersTable(props) {
 }
 
 function RowItem(props) {
-  const { item, setOpenDialog } = props;
+  const { item, setOpenDialog,setEditorDialog,setUpdatedData } = props;
   return (
     <TableRow>
       <TableCell>
@@ -100,7 +102,7 @@ function RowItem(props) {
           }}
         >
           <img src={item.img} alt={"sample data"} />
-          <Typography sx={{ ml: 2 }}>{item.name}</Typography>
+          <Typography sx={{ ml: 2 }}>{item.firstName}</Typography>
         </Box>
       </TableCell>
       <TableCell>
@@ -110,7 +112,7 @@ function RowItem(props) {
         <Typography>{item.email}</Typography>
       </TableCell>
       <TableCell>
-        <Typography>{item.number}</Typography>
+        <Typography>{item.phone}</Typography>
       </TableCell>
       <TableCell>
         <Box
@@ -136,7 +138,10 @@ function RowItem(props) {
           <Typography sx={{ mr: 2 }}>{item.joiningDate
           }</Typography>
           <IconButton
-            onClick={() => setOpenDialog({ label: "edit", value: true })}
+            onClick={() =>{
+              setEditorDialog("editTeamMemeber")  
+               setUpdatedData(item)
+               setOpenDialog({ label: "edit", value: true })}}
           >
             <img src={setting} alt="setting" />
           </IconButton>

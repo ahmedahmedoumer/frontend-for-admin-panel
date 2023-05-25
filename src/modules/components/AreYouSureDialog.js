@@ -60,6 +60,19 @@ export default function AreYouSureDialog(props) {
           console.log(error.response);
          });
     }
+    else if(submitText==="Yes, Edit"){
+      const update=await axios.post(`http://localhost:8000/api/team-members/update?updateId=${updateUserData.id}`,updateUserData,{
+        headers:{
+          'Authorization':'Bearer '+localStorage.getItem('token'),
+        }
+       })
+       .then(function(response){
+        submit();
+       })
+       .catch(function(error){
+        console.log(error.response);
+       })
+    }
 
     if (openSnackbar) {
       openSnackbar();

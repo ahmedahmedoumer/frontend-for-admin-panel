@@ -22,12 +22,15 @@ import axios from 'axios';
 import { useSelector } from "react-redux";
 import { POPPINS } from "../utils/config";
 import photo from "../assets/images/photo.svg";
+import { useEffect } from "react";
 // import Select from "../components/Select";
 export default function EditUserDialog(props) {
+const Selector=useSelector((state)=>state);
+const User=Selector.user;
+const { open, onClose, openSubmit, submitText,setUpdateUserData,ValidationData,editorDialog,updatedData} = props;
 
-const { open, onClose, openSubmit, submitText,setUpdateUserData,ValidationData,setEditorDialog } = props;
   const [file, setFile] = useState(null);
-  
+  const [userArray, setUserArray]=useState({});
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
@@ -40,8 +43,21 @@ const { open, onClose, openSubmit, submitText,setUpdateUserData,ValidationData,s
   const handleDragOver = (event) => {
     event.preventDefault();
   };
+let userData=editorDialog=="adminProfile"?User:updatedData;
 
-// const ValidationError=useSelector(state=>state);
+  useEffect(()=>{
+    setUserArray({
+      id:userData?userData.id:null,
+      firstName:userData?userData.firstName:null,
+      lastName:userData?userData.lastName:null,
+      email:userData?userData.email:null,
+      status:userData?userData.status:null,
+      phone:userData?userData.phone:null,
+      title:userData?userData.title:null,
+      password: "*** ",
+      confirmPassword: "***",
+    })
+  },[]);
 const [ValidationError,setValidationError]=useState({
   firstName:null,
   lastName:null,
@@ -52,19 +68,8 @@ const [ValidationError,setValidationError]=useState({
   password:null,
   confirmPassword:null,
 });
-const userData = useSelector(state => state.user);
 
-const [userArray, setUserArray] = useState({
-  firstName: userData.firstName,
-  lastName: userData.lastName,
-  email: userData.email,
-  title: userData.title,
-  status: userData.status,
-  phone: userData.phone,
-  password: "*************",
-  confirmPassword: "*************"
-});
-
+console.log(userArray);
 const onChangeHandler=(e)=>{
       e.preventDefault();
       setUserArray({...userArray,[e.target.name]:e.target.value});
@@ -75,17 +80,16 @@ const onChangeHandler=(e)=>{
       }
 }
 const submiHandling=async()=>{
-  const checkValidation=await axios.post('http://localhost:8000/api/UpdatecheckValidation',userArray,{
+  const checkValidation=await axios.post(`http://localhost:8000/api/UpdatecheckValidation?updateId=${userArray.id}`,userArray,{
      headers:{
       'Authorization':'Bearer '+localStorage.getItem('token'),
      }
   })
   .then(function(response){
-    console.log("hello ahmedin");
-    setUpdateUserData(userArray);
     openSubmit();
   })
   .catch(function(error){
+    console.log(error);
     setValidationError({
       firstName:error.response.data.errors.firstName,
       lastName:error.response.data.errors.lastName,

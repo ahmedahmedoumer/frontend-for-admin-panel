@@ -11,6 +11,8 @@ import axios from 'axios'
 export default function TeamMembers() {
 
   const [teamMembers,setTeamMembers]=useState([]);
+  const [editorDialog,setEditorDialog]=useState(null);
+  const [updatedData,setUpdatedData]=useState([]);
   const [openDialog, setOpenDialog] = useState({});
   const [submitDialog, setSubmitDialog] = useState({});
   const [pageSize,setPageSize]=useState(1)
@@ -67,7 +69,9 @@ export default function TeamMembers() {
         </Box>
       </Box>
       <TeamMembersTable
+       setEditorDialog={setEditorDialog}
        setOpenDialog={setOpenDialog} 
+       setUpdatedData={setUpdatedData}
        teamMembers={teamMembers} 
        pageSize={pageSize} 
        setCurrentPage={setCurrentPage}
@@ -79,6 +83,7 @@ export default function TeamMembers() {
       {openDialog.label === "add" && openDialog.value && (
         <EditUserDialog
           submitText="Add"
+          updatedData={updatedData}
           openSubmit={() => setSubmitDialog({ label: "add", value: true })}
           open={openDialog.value}
           onClose={() => setOpenDialog(false)}
@@ -87,29 +92,33 @@ export default function TeamMembers() {
       {openDialog.label === "edit" && openDialog.value && (
         <EditUserDialog
           submitText="Update"
-          openSubmit={() => setSubmitDialog({ label: "edit", value: "true" })}
+          updatedData={updatedData}
+          openSubmit={() => setSubmitDialog({ label: "edit", value: true })}
           open={openDialog.value}
           onClose={() => setOpenDialog(false)}
         />
       )}
       {submitDialog.label === "add" && submitDialog.value && (
         <AreYouSureDialog
+          updateUserData={updatedData}
+          submitText="Yes, Add"
           open={submitDialog.value}
           onClose={() => setSubmitDialog(false)}
           title="Are you sure you want to  Add Member ?"
-          submitText="Yes, Add"
           submit={() => setOpenDialog({ ...openDialog, value: false })}
         />
       )}
       {submitDialog.label === "edit" && submitDialog.value && (
         <AreYouSureDialog
+          updateUserData={updatedData}
           open={submitDialog.value}
           onClose={() => setSubmitDialog(false)}
-          title="Are you sure you want to  Edit Member ?"
+          title="Are you sure you want to Edit Member ?"
           submitText="Yes, Edit"
           submit={() => setOpenDialog({ ...openDialog, value: false })}
         />
       )}
-    </ViewContainer>
+ </ViewContainer>
+
   );
-}
+      }

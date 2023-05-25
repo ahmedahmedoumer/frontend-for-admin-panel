@@ -1,32 +1,20 @@
 import { Popover, MenuItem } from "@mui/material";
 import { useSelector,useDispatch } from "react-redux";
+import { USER_EDITOR_DIALOG } from "../context/actionTypes/actionTypes";
 
 export default function Menu(props) {
-  const Selector=useSelector((state)=>state);
   const { anchorEl, open, onClose, openDialog,openSubmit,setTitle,setSubmitText,setEditorDialog } = props;
-  const handleClick=(newTitle,newSubmitText)=>{
-             setTitle("Are you sure you want to Update the Profile ?");
-             setHeader("Editing Admin Profile Picture");
-             setSubmitText("yes Update");
-             if (newSubmitText!=="yes Logout") {
-                  openDialog();
-             }
-             else{
-             openSubmit();
-             }
-    }
-    const logoutHandler=()=>{
-      setTitle(newTitle);
-      setHeader("Editing A Profile Picture");
-      setEditorDialog('adminProfileUpdate');
-      setSubmitText(newSubmitText);
-      if (newSubmitText!=="yes Logout") {
-           openDialog();
-      }
-      else{
-      openSubmit();
-      }
-    }
+  const handleClick=()=>{
+        setTitle("Are you sure you want to Update the Profile ?");
+        setEditorDialog("adminProfile");
+        setSubmitText("yes Update");
+        openDialog();
+}
+  const logoutHandler=()=>{
+    setTitle("Are you sure you want to logout ?");
+    setSubmitText("yes Logout");
+    openSubmit();
+   }
  
   return (
     <Popover
@@ -53,7 +41,7 @@ export default function Menu(props) {
       <MenuItem onClick={()=>{handleClick()}} sx={{ borderBottom: "1px solid #ccc" }}>
         Update profile
       </MenuItem>
-      <MenuItem onClick={()=>{handleClick("Are you sure you want to logout ?","yes Logout")}}>Logout</MenuItem>
+      <MenuItem onClick={()=>{logoutHandler()}}>Logout</MenuItem>
     </Popover>
   );
 }

@@ -7,6 +7,7 @@ import { SET_lOGIN_ERROR,
   SET_ALL_TASKS_DATA,
   SET_REPORTS_DATA,
   SET_PLANNER,
+  USER_EDITOR_DIALOG,
   SET_DESIGNNER} from "../actionTypes/actionTypes";
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
   reports_data:[],
   planner_data:[],
   designner_data:[],
+  editor_dialog_data:[],
 
 };
 
@@ -67,6 +69,10 @@ export const userData = (state = initialState, action) => {
             return {
               ...state,planner_data:action.payload,
             }
+            case USER_EDITOR_DIALOG:
+              return {
+              ...state,editor_dialog_data:action.payload,
+              }
     default:
       return state;
   }

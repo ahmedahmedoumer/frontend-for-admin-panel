@@ -30,7 +30,6 @@ import {
   GalleryIcon,
   ReceiptIcon,
 } from "../utils/config";
-import { AxiosContext } from "react-axios/lib/components/AxiosProvider";
 
 const Container = styled("div")(({ theme }) => ({
   display: "flex",
@@ -607,8 +606,8 @@ checkAuthenticated();
         </Box>
         <Menu
           onClose={() => setIsOpen(false)}
-          setEditorDialog={setEditorDialog}
           openDialog={handleOpenDialog}
+          setEditorDialog={setEditorDialog}
           openSubmit={()=>setSubmitDialog(true)}
           open={open}
           setTitle={setTitle}
@@ -623,7 +622,7 @@ checkAuthenticated();
         <EditUserDialog
           openSubmit={() => setSubmitDialog(true)}
           open={openDialog}
-          setEditorDialog={setEditorDialog}
+          editorDialog={editorDialog}
           ValidationData={updateUserValidation}
           setUpdateUserData={setUpdateUserData}
           onClose={() => setOpenDialog(false)}
