@@ -30,63 +30,17 @@ export default function TeamMembersTable(props) {
     <TableCell key="date">Joining date</TableCell>,
   ];
  const teamMembersData=teamMembers;
-  const data = [
-    {
-      img: user1,
-      name: "Omar",
-      title: "Planner",
-      status: "active",
-      email: "omar123@abc.com",
-      number: "+010213123121",
-      date: "22/4/2023",
-    },
-    {
-      img: user2,
-      name: "Omar",
-      title: "Manager",
-      status: "active",
-      email: "omar123@abc.com",
-      number: "+010213123121",
-      date: "22/4/2023",
-    },
-    {
-      img: user3,
-      name: "Omar",
-      title: "Creator",
-      status: "active",
-      email: "omar123@abc.com",
-      number: "+010213123121",
-      date: "22/4/2023",
-    },
-    {
-      img: user4,
-      name: "Omar",
-      title: "Planner",
-      status: "hold",
-      email: "omar123@abc.com",
-      number: "+010213123121",
-      date: "22/4/2023",
-    },
-    {
-      img: user5,
-      name: "Omar",
-      title: "Manager",
-      status: "hold",
-      email: "omar123@abc.com",
-      number: "+010213123121",
-      date: "22/4/2023",
-    },
-    {
-      img: user6,
-      name: "Omar",
-      status: "hold",
-      title: "Creator",
-      email: "omar123@abc.com",
-      number: "+010213123121",
-      date: "22/4/2023",
-    },
-  ];
-
+  const data=teamMembersData.map((teamMembers)=>({
+    img: user1,
+    name: teamMembers.firstName,
+    email: teamMembers.email,
+    title: teamMembers.title,
+    status: teamMembers.status,
+    number:teamMembers.phone,
+    date:teamMembers.created_at,
+  }));   
+  
+  
   return (
     <Card
       sx={{
@@ -119,7 +73,7 @@ export default function TeamMembersTable(props) {
           <TableRow>{tableColumns}</TableRow>
         </TableHead>
         <TableBody>
-          {teamMembersData.map((item, index) => (
+          {data.map((item, index) => (
             <RowItem key={index} item={item} setOpenDialog={setOpenDialog} />
           ))}
         </TableBody>
@@ -145,8 +99,8 @@ function RowItem(props) {
             width: "100%",
           }}
         >
-          <img src={"contact.jpg"} alt={"sample data"} />
-          <Typography sx={{ ml: 2 }}>{item.firstName}</Typography>
+          <img src={item.img} alt={"sample data"} />
+          <Typography sx={{ ml: 2 }}>{item.name}</Typography>
         </Box>
       </TableCell>
       <TableCell>
@@ -156,7 +110,7 @@ function RowItem(props) {
         <Typography>{item.email}</Typography>
       </TableCell>
       <TableCell>
-        <Typography>{item.phone}</Typography>
+        <Typography>{item.number}</Typography>
       </TableCell>
       <TableCell>
         <Box

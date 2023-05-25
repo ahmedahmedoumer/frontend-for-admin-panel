@@ -47,7 +47,7 @@ export default function Users() {
   useEffect(()=>{
     setAllUsers(Selector.all_users_data);
     users();
-  },[pageSize,currentPage,perPage]);
+  },[pageSize,currentPage,perPage,openDialog]);
   const users=async()=>{
     const usersData=await axios.get(`http://localhost:8000/api/all-users?perPage=${perPage}&currentPage=${currentPage}`,{
       headers:{
@@ -408,6 +408,7 @@ export default function Users() {
             userID={allUsers.id}
             assignedRole={openDialog.label}
             assignedValue={assignedValue}
+            setOpenDialog={setOpenDialog}
             onClose={() => setSubmitOpenDialog(false)}
             title="Are you sure you want to re-Assign the Planner ?"
             submitText="Yes, Re-Assign"
@@ -419,6 +420,7 @@ export default function Users() {
             userID={allUsers.id}
             assignedRole={openDialog.label}
             assignedValue={assignedValue}
+            setOpenDialog={setOpenDialog}
             onClose={() => setSubmitOpenDialog(false)}
             title="Are you sure you want to re-Assign the Designer ?"
             submitText="Yes, Re-Assign"

@@ -44,6 +44,7 @@ const Container = styled("div")(({ theme }) => ({
 export default function ContentWrapper({ children }) {
   const currentPath = useLocation();
   const [open, setIsOpen] = useState(false);
+  const [editorDialog,setEditorDialog]=useState(null);
   const [openNotofocation, setOpenNotofocation] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [submitDialog, setSubmitDialog] = useState(false);
@@ -73,7 +74,6 @@ export default function ContentWrapper({ children }) {
         }
       })
       .then(function(response){
-        // console.log(response);
          dispatch({
           type:LOGIN_USER,
           payload:response.data,
@@ -82,7 +82,6 @@ export default function ContentWrapper({ children }) {
          currentPath.pathname==='/login' ? Navigate('/dashboard'):Navigate(currentPath.pathname);
       })
       .catch(function(error){
-        // console.log(error);
         setIsAuthenticated(false);
         Navigate('/login');
       });
@@ -608,6 +607,7 @@ checkAuthenticated();
         </Box>
         <Menu
           onClose={() => setIsOpen(false)}
+          setEditorDialog={setEditorDialog}
           openDialog={handleOpenDialog}
           openSubmit={()=>setSubmitDialog(true)}
           open={open}
@@ -623,6 +623,7 @@ checkAuthenticated();
         <EditUserDialog
           openSubmit={() => setSubmitDialog(true)}
           open={openDialog}
+          setEditorDialog={setEditorDialog}
           ValidationData={updateUserValidation}
           setUpdateUserData={setUpdateUserData}
           onClose={() => setOpenDialog(false)}

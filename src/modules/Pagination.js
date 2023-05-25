@@ -20,6 +20,7 @@ export default function Pagination(props) {
 
 
   const fetchData=(page)=>{
+
     setCurrentPage(page);
     setPageData(page);
   }
@@ -52,7 +53,7 @@ export default function Pagination(props) {
     <nav>
       <List>
         {items.map(({ page, type, selected, ...item }, index) => {
-          // console.log(items);
+
           let children = null;
           if (type === "start-ellipsis" || type === "end-ellipsis") {
             children = "…";
@@ -64,7 +65,7 @@ export default function Pagination(props) {
                   width: 32,
                   height: 32,
                   color: "#4C4C4C",
-                  background: "E6E6E6",
+                  background: selected ? "#E6E6FF" : undefined,
                   border: "none",
                   borderRadius: "50%",
                   marginRight: "6px",

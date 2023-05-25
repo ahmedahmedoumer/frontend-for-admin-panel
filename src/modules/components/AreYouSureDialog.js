@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { SET_ALERT_MESSAGE, SET_VALIDATION_ERROR,LOGIN_USER } from "../../context/actionTypes/actionTypes";
 
 export default function AreYouSureDialog(props) {
-  const { open, onClose, title, submitText, submit, submitIcon, openSnackbar,updateUserData,userID,assignedValue,assignedRole } =props;
+  const { open, onClose, title, submitText, submit, submitIcon, openSnackbar,updateUserData,userID,assignedValue,assignedRole,setOpenDialog } =props;
    const Navigate=useNavigate();
    const Selector=useSelector(state=>state);
    const Dispatch=useDispatch();
@@ -49,11 +49,12 @@ export default function AreYouSureDialog(props) {
     else if( submitText=="Yes, Re-Assign"){
          const reAssign=await axios.get(`http://localhost:8000/api/users/${assignedRole}/re-assigned?userID=${userID}&assignedValue=${assignedValue}`,{
           headers:{
-            'Authorization':'Bearer '+localStorage.getItem('token'),
+            'Authorization':'Bearer '+ localStorage.getItem('token'),
           }
          })
          .then(function(response){
                console.log(response.data);
+               setOpenDialog(false);
          })
          .catch(function(error){
           console.log(error.response);

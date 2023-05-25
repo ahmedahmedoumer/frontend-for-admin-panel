@@ -25,6 +25,7 @@ import photo from "../assets/images/photo.svg";
 // import Select from "../components/Select";
 export default function EditUserDialog(props) {
 
+const { open, onClose, openSubmit, submitText,setUpdateUserData,ValidationData,setEditorDialog } = props;
   const [file, setFile] = useState(null);
   
   const handleFileChange = (event) => {
@@ -40,7 +41,6 @@ export default function EditUserDialog(props) {
     event.preventDefault();
   };
 
-const { open, onClose, openSubmit, submitText,setUpdateUserData,ValidationData } = props;
 // const ValidationError=useSelector(state=>state);
 const [ValidationError,setValidationError]=useState({
   firstName:null,
@@ -124,7 +124,6 @@ const submiHandling=async()=>{
               style={{ display: 'none' }}
             />
           </IconButton>
-          <p>Drag and drop an image file here, or click to select a file from your computer.</p>
         </div>
           <Typography
             sx={{ fontWeight: 500, fontSize: "20px", ml: 1.5, ...POPPINS }}
