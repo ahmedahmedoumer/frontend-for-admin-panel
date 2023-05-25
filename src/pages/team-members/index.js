@@ -48,7 +48,9 @@ export default function TeamMembers() {
         />
         <Box>
           <Button
-            onClick={() => setOpenDialog({ label: "add", value: true })}
+            onClick={() =>{ 
+              setOpenDialog({ label: "add", value: true }) 
+              setEditorDialog("addTeamMember")}}
             startIcon={<img src={plusIcon} alt="plus" />}
             sx={{
               color: "white",
@@ -82,8 +84,9 @@ export default function TeamMembers() {
 
       {openDialog.label === "add" && openDialog.value && (
         <EditUserDialog
+          editorDialog={editorDialog}
+          setUpdatedData={setUpdatedData}
           submitText="Add"
-          updatedData={updatedData}
           openSubmit={() => setSubmitDialog({ label: "add", value: true })}
           open={openDialog.value}
           onClose={() => setOpenDialog(false)}
@@ -92,7 +95,9 @@ export default function TeamMembers() {
       {openDialog.label === "edit" && openDialog.value && (
         <EditUserDialog
           submitText="Update"
+          editorDialog={editorDialog}
           updatedData={updatedData}
+          setUpdatedData={setUpdatedData}
           openSubmit={() => setSubmitDialog({ label: "edit", value: true })}
           open={openDialog.value}
           onClose={() => setOpenDialog(false)}
@@ -104,7 +109,7 @@ export default function TeamMembers() {
           submitText="Yes, Add"
           open={submitDialog.value}
           onClose={() => setSubmitDialog(false)}
-          title="Are you sure you want to  Add Member ?"
+          title="Are you sure you want to Add Member ?"
           submit={() => setOpenDialog({ ...openDialog, value: false })}
         />
       )}

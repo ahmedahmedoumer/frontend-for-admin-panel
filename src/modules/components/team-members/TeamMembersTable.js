@@ -139,7 +139,7 @@ function RowItem(props) {
           }</Typography>
           <IconButton
             onClick={() =>{
-              setEditorDialog("editTeamMemeber")  
+               setEditorDialog("editTeamMemeber")  
                setUpdatedData(item)
                setOpenDialog({ label: "edit", value: true })}}
           >

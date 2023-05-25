@@ -23,11 +23,12 @@ import { useSelector } from "react-redux";
 import { POPPINS } from "../utils/config";
 import photo from "../assets/images/photo.svg";
 import { useEffect } from "react";
+import { ContactsOutlined } from "@mui/icons-material";
 // import Select from "../components/Select";
 export default function EditUserDialog(props) {
 const Selector=useSelector((state)=>state);
 const User=Selector.user;
-const { open, onClose, openSubmit, submitText,setUpdateUserData,ValidationData,editorDialog,updatedData} = props;
+const { open, onClose, openSubmit, submitText,setUpdateUserData,ValidationData,editorDialog,updatedData,setUpdatedData} = props;
 
   const [file, setFile] = useState(null);
   const [userArray, setUserArray]=useState({});
@@ -43,7 +44,8 @@ const { open, onClose, openSubmit, submitText,setUpdateUserData,ValidationData,e
   const handleDragOver = (event) => {
     event.preventDefault();
   };
-let userData=editorDialog=="adminProfile"?User:updatedData;
+  const adduserData=[];
+let userData=(editorDialog=="adminProfile")?User:(editorDialog=="addTeamMember")?[]:updatedData;
 
   useEffect(()=>{
     setUserArray({
@@ -56,7 +58,7 @@ let userData=editorDialog=="adminProfile"?User:updatedData;
       title:userData?userData.title:null,
       password: "*** ",
       confirmPassword: "***",
-    })
+    });
   },[]);
 const [ValidationError,setValidationError]=useState({
   firstName:null,
@@ -69,7 +71,6 @@ const [ValidationError,setValidationError]=useState({
   confirmPassword:null,
 });
 
-console.log(userArray);
 const onChangeHandler=(e)=>{
       e.preventDefault();
       setUserArray({...userArray,[e.target.name]:e.target.value});
@@ -80,6 +81,7 @@ const onChangeHandler=(e)=>{
       }
 }
 const submiHandling=async()=>{
+  setUpdatedData(userArray);
   const checkValidation=await axios.post(`http://localhost:8000/api/UpdatecheckValidation?updateId=${userArray.id}`,userArray,{
      headers:{
       'Authorization':'Bearer '+localStorage.getItem('token'),

@@ -1,24 +1,31 @@
 import { Popover, MenuItem } from "@mui/material";
 import { useSelector,useDispatch } from "react-redux";
-import { USER_EDITOR_DIALOG } from "../context/actionTypes/actionTypes";
 
 export default function Menu(props) {
+  const Selector=useSelector((state)=>state);
   const { anchorEl, open, onClose, openDialog,openSubmit,setTitle,setSubmitText,setEditorDialog } = props;
   const handleClick=()=>{
-        setTitle("Are you sure you want to Update the Profile ?");
-        setEditorDialog("adminProfile");
-        setSubmitText("yes Update");
-        openDialog();
-}
-  const logoutHandler=()=>{
-    setTitle("Are you sure you want to logout ?");
-    setSubmitText("yes Logout");
-    openSubmit();
-   }
+             setTitle("Are you sure you want to Update the Profile ?");
+             setHeader("Editing Admin Profile Picture");
+             setSubmitText("yes Update");
+    }
+    const logoutHandler=()=>{
+      setTitle("Are you sure you want to logout ?");
+      setHeader("Editing A Profile Picture");
+      setEditorDialog('adminProfileUpdate');
+      setSubmitText("yes Logout");
+      if (newSubmitText!=="yes Logout") {
+           openDialog();
+      }
+      else{
+      openSubmit();
+      }
+    }
  
   return (
     <Popover
       anchorEl={anchorEl}
+      
       open={open}
       onClose={onClose}
       sx={{
