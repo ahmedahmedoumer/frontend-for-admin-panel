@@ -12,6 +12,8 @@ export default function AreYouSureDialog(props) {
    const Dispatch=useDispatch();
   async function handleSubmit(){
     
+
+    console.log(submitText);
     if (submit && submitText==="yes Logout") {
       submit();
       const check=await axios.get('http://localhost:8000/api/logout', {
@@ -74,7 +76,7 @@ export default function AreYouSureDialog(props) {
         console.log(error.response);
        })
     }
-    else if(submitText="Yes, Add"){
+    else if(submitText==="Yes, Add"){
       const add=await axios.post('http://localhost:8000/api/team-members/add',updateUserData,{
         headers:{
           'Authorization':'Bearer '+localStorage.getItem('token'),

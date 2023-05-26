@@ -8,7 +8,9 @@ import {
   TextField,
   Box,
 } from "@mui/material";
+import axios from 'axios';
 import { POPPINS } from "../utils/config";
+import { useState } from "react";
 
 export default function CreateAndUpdateDialog(props) {
   const {
@@ -18,12 +20,45 @@ export default function CreateAndUpdateDialog(props) {
     label1,
     label2,
     label3,
-    placeholder1,
-    placeholder2,
-    placeholder3,
     submit,
+    onSubmit,
+    setPlanLibrary,
+    editPlanData,
   } = props;
+const planData=editPlanData;
+const [item,setItems]=useState({
+  id:planData.id,
+  title:planData.title,
+  description:planData.description,
+  prompt:planData.prompt,
+});
+const checkValidation=async()=>{
+const data={
+  id:item.id,
+  title:item.title,
+  description:item.description,
+  prompt:item.prompt,
+};
 
+  const checkValidation=await axios.post(`http://localhost:8000/api/plan-library/update-plan?planId=${data.id}`,{data},{
+    headers:{
+      'Authorization':'Bearer '+localStorage.getItem('token'),
+    }
+  })
+  .then(function(response){
+       setPlanLibrary(response.data.data);
+       onClose();
+       onSubmit();
+  })
+  .catch(function(error){
+     console.log(error);
+  });
+
+}
+const HandleChange=(e)=>{
+      e.preventDefault();
+      setItems({...item,[e.target.name]:e.target.value});
+}
   return (
     <Dialog
       maxWidth="sm"
@@ -62,7 +97,8 @@ export default function CreateAndUpdateDialog(props) {
             sx={{ background: "#fff" }}
             name="title"
             id="plan-title"
-            placeholder={placeholder1}
+            value={item.title}
+            onChange={HandleChange}
           />
         </Box>
         <Box mb={2}>
@@ -73,10 +109,11 @@ export default function CreateAndUpdateDialog(props) {
             fullWidth
             multiline
             rows={3}
-            name="title"
+            name="description"
             id="plan-description"
             sx={{ background: "#fff" }}
-            placeholder={placeholder2}
+            value={item.description}
+            onChange={HandleChange}
           />
         </Box>
         <Box mb={8}>
@@ -87,16 +124,16 @@ export default function CreateAndUpdateDialog(props) {
             fullWidth
             multiline
             rows={3}
-            name="title"
+            name="prompt"
+            id={"plan-prompt"}
             sx={{ background: "#fff" }}
-            id="prompt"
-            placeholder={placeholder3}
+            value={item.prompt}
+            onChange={HandleChange}
           />
         </Box>
       </DialogContent>
       <DialogActions
-        sx={{ display: "flex", justifyContent: "center", mb: 5.78 }}
-      >
+        sx={{ display: "flex", justifyContent: "center", mb: 5.78 }}>
         <Button
           onClick={onClose}
           sx={{
@@ -112,7 +149,9 @@ export default function CreateAndUpdateDialog(props) {
           Cancel
         </Button>
         <Button
-          onClick={onClose}
+          onClick={()=>{
+            checkValidation(item)
+          }}
           sx={{
             background:
               "linear-gradient(99.32deg, #B4CD93 7.91%, #427A5B 88.96%)",

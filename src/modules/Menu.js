@@ -3,7 +3,7 @@ import { useSelector,useDispatch } from "react-redux";
 
 export default function Menu(props) {
   const Selector=useSelector((state)=>state);
-  const { anchorEl, open, onClose, openDialog,openSubmit,setTitle,setSubmitText,setEditorDialog } = props;
+  const { anchorEl, open, onClose, openDialog,openSubmit,setTitle,setSubmitText,setEditorDialog,setHeader } = props;
   const handleClick=()=>{
              setTitle("Are you sure you want to Update the Profile ?");
              setHeader("Editing Admin Profile Picture");
@@ -14,12 +14,8 @@ export default function Menu(props) {
       setHeader("Editing A Profile Picture");
       setEditorDialog('adminProfileUpdate');
       setSubmitText("yes Logout");
-      if (newSubmitText!=="yes Logout") {
-           openDialog();
-      }
-      else{
       openSubmit();
-      }
+      
     }
  
   return (

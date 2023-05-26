@@ -16,7 +16,7 @@ import settingIcon from "../../../assets/images/setting.svg";
 import { POPPINS } from "../../../utils/config";
 
 export default function PlanLibraryTable(props) {
-  const { setOpenDialog,pageSize,setCurrentPage,planLibrary } = props;
+  const { setOpenDialog,pageSize,setCurrentPage,planLibrary,setEditPlanData } = props;
 
   const tableColumns = [
     <TableCell key="name">
@@ -34,29 +34,35 @@ export default function PlanLibraryTable(props) {
     </TableCell>,
   ];
   const planData=planLibrary;
-  console.log(planData);
-  const data = [
-    {
-      title: "Planner",
-      description: "Write a description of your Plan",
-      prompt: "Write The prompt of your Plan",
-    },
-    {
-      title: "Planner",
-      description: "Write a description of your Plan",
-      prompt: "Write The prompt of your Plan",
-    },
-    {
-      title: "Planner",
-      description: "Write a description of your Plan",
-      prompt: "Write The prompt of your Plan",
-    },
-    {
-      title: "Planner",
-      description: "Write a description of your Plan",
-      prompt: "Write The prompt of your Plan",
-    },
-  ];
+  const data =planData.map((plan)=>({
+              id:plan?plan.id:null,   
+              title:plan?plan.planTitle:null,
+              description:plan?plan.planDescription:null,
+              prompt:plan?plan.planPrompt:null,
+  }));
+
+  // [
+  //   {
+  //     title: "Planner",
+  //     description: "Write a description of your Plan",
+  //     prompt: "Write The prompt of your Plan",
+  //   },
+    // {
+    //   title: "Planner",
+    //   description: "Write a description of your Plan",
+    //   prompt: "Write The prompt of your Plan",
+    // },
+    // {
+    //   title: "Planner",
+    //   description: "Write a description of your Plan",
+    //   prompt: "Write The prompt of your Plan",
+    // },
+    // {
+    //   title: "Planner",
+    //   description: "Write a description of your Plan",
+    //   prompt: "Write The prompt of your Plan",
+    // },
+  // ];
 
   return (
     <Card
@@ -92,8 +98,8 @@ export default function PlanLibraryTable(props) {
           <TableRow>{tableColumns}</TableRow>
         </TableHead>
         <TableBody>
-          {planData.map((item, index) => (
-            <RowItem key={index} item={item} setOpenDialog={setOpenDialog} />
+          {data.map((item, index) => (
+            <RowItem key={index} item={item} setOpenDialog={setOpenDialog} setEditPlanData={setEditPlanData} />
           ))}
         </TableBody>
       </Table>
@@ -105,13 +111,13 @@ export default function PlanLibraryTable(props) {
 }
 
 function RowItem(props) {
-  const { item, setOpenDialog } = props;
+  const { item, setOpenDialog,setEditPlanData } = props;
 
   return (
     <TableRow>
       <TableCell>
         <Typography sx={{ fontWeight: 500, fontSize: "20px", ...POPPINS }}>
-          {item.planTitle}
+          {item.title}
         </Typography>
       </TableCell>
       <TableCell>
@@ -127,7 +133,7 @@ function RowItem(props) {
           rows={2}
           multiline
           name={item.description}
-          placeholder={item.planDescription
+          placeholder={item.description
           }
         />
       </TableCell>
@@ -151,14 +157,17 @@ function RowItem(props) {
             rows={2}
             multiline
             name={item.prompt}
-            placeholder={item.planPrompt}
+            placeholder={item.prompt}
           />
           <IconButton>
             <img src={promptIcon} alt="promptIcon" />
           </IconButton>
           <IconButton
             sx={{ px: 0 }}
-            onClick={() => setOpenDialog({ label: "edit", value: true })}
+            onClick={() =>{
+              setOpenDialog({ label: "edit", value: true })
+              setEditPlanData(item)
+          }}
           >
             <img src={settingIcon} alt="setting" />
           </IconButton>

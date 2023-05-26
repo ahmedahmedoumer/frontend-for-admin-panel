@@ -3,6 +3,7 @@ import ViewContainer from "../../modules/ViewContainer";
 import plusIcon from "../../assets/images/plus.svg";
 import PageHeader from "../../modules/PageHeader";
 import PlanLibraryTable from "../../modules/components/plan-library/PlanLibraryTable";
+import PlanSureDialog from "../../modules/components/plan-library/PlanSureDialog";
 import ViewDate from "../../modules/ViewDate";
 import CreateAndUpdateDialog from "../../modules/CreateAndUpdateDialog";
 import { useState,useEffect } from "react";
@@ -14,10 +15,13 @@ export default function PlanLibrary() {
   const [pageSize,setPageSize]=useState(1);
   const [currentPage,setCurrentPage]=useState(1);
   const [planLibrary,setPlanLibrary]=useState([]);
+  const [editPlanData,setEditPlanData]=useState([]);
+  const [openSureDialoge,setOpenSureDialog]=useState(false);
+
   const perPage=4;
 useEffect(()=>{
   fetchPlanLibrary();
-},[currentPage]);
+},[currentPage,openDialog]);
 const fetchPlanLibrary=async()=>{
       const fetchData=await axios.get(`http://localhost:8000/api/plan-library?perPage=${perPage}&currentPage=${currentPage}`,{
         headers:{
@@ -30,11 +34,9 @@ const fetchPlanLibrary=async()=>{
          setPageSize(response.data.last_page);
       })
       .catch(function(error){
-        //  console.log(error.response.data);
+         console.log(error.response.data);
       });
 }
-
-
   return (
     <ViewContainer>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -65,7 +67,13 @@ const fetchPlanLibrary=async()=>{
           </Button>
         </Box>
       </Box>
-      <PlanLibraryTable setOpenDialog={setOpenDialog} planLibrary={planLibrary} pageSize={pageSize} setCurrentPage={setCurrentPage} />
+      <PlanLibraryTable 
+       setOpenDialog={setOpenDialog}
+       planLibrary={planLibrary} 
+       pageSize={pageSize} 
+       setCurrentPage={setCurrentPage}
+       setEditPlanData={setEditPlanData}
+       />
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <ViewDate />
       </Box>
@@ -86,15 +94,16 @@ const fetchPlanLibrary=async()=>{
 
       {openDialog.label === "edit" && openDialog.value && (
         <CreateAndUpdateDialog
+          onSubmit={(()=>{setOpenSureDialog(true)})}
           title="Editing A Prompt"
           label1="Plan Title"
           label2="Description"
           label3="Prompt"
-          placeholder1="Write your Plan Title here"
-          placeholder2="write a description for you plan"
-          placeholder3="write a Prompt for you plan"
+          submit="Edit"
+          setPlanLibrary={setPlanLibrary}
+          editPlanData={editPlanData}
+          setEditPlanData={setEditPlanData}
           open={openDialog.value}
-          submit="Update"
           onClose={() => setOpenDialog(false)}
         />
       )}
