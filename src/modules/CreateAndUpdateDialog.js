@@ -27,10 +27,10 @@ export default function CreateAndUpdateDialog(props) {
   } = props;
 const planData=editPlanData;
 const [item,setItems]=useState({
-  id:planData.id,
-  title:planData.title,
-  description:planData.description,
-  prompt:planData.prompt,
+  id:planData?planData.id:null,
+  title:planData?planData.title:null,
+  description:planData?planData.description:null,
+  prompt:planData?planData.prompt:null,
 });
 const checkValidation=async()=>{
 const data={
@@ -39,21 +39,36 @@ const data={
   description:item.description,
   prompt:item.prompt,
 };
-
-  const checkValidation=await axios.post(`http://localhost:8000/api/plan-library/update-plan?planId=${data.id}`,{data},{
-    headers:{
-      'Authorization':'Bearer '+localStorage.getItem('token'),
+    if (submit==="Add") {
+      const checkValidation=await axios.post(`http://localhost:8000/api/add-planLibrary`,{data},{
+        headers:{
+          'Authorization':'Bearer '+localStorage.getItem('token'),
+        }
+      })
+      .then(function(response){
+           setPlanLibrary(response.data.data);
+           onClose();
+           onSubmit();
+      })
+      .catch(function(error){
+         console.log(error);
+      });      
     }
-  })
-  .then(function(response){
-       setPlanLibrary(response.data.data);
-       onClose();
-       onSubmit();
-  })
-  .catch(function(error){
-     console.log(error);
-  });
-
+    else{
+      const checkValidation=await axios.post(`http://localhost:8000/api/plan-library/update-plan?planId=${data.id}`,{data},{
+          headers:{
+                  'Authorization':'Bearer '+localStorage.getItem('token'),
+                  }
+      })
+        .then(function(response){
+            setPlanLibrary(response.data.data);
+            onClose();
+            onSubmit();
+      })
+        .catch(function(error){
+         console.log(error);
+      });
+    }
 }
 const HandleChange=(e)=>{
       e.preventDefault();

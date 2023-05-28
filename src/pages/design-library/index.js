@@ -30,7 +30,7 @@ export default function DesignLibrary() {
           setPageSize(response.data.last_page);
       })
       .catch(function(error){
-          // console.log(error);
+          console.log(error);
       });
   }
   return (

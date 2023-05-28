@@ -1,7 +1,7 @@
 import { Typography, Grid, Paper } from "@mui/material";
 
 export default function DesignLibraryCard(props) {
-  const { img, openDialog } = props;
+  const { img,label, openDialog } = props;
   const styles = {
     paperContainer: {
       backgroundImage: `url(${img})`,
@@ -22,7 +22,7 @@ export default function DesignLibraryCard(props) {
       onClick={() => openDialog(true)}
     >
       <Paper style={styles.paperContainer}>
-        <Typography sx={{ color: "#fff", ml: 1, mb: 1 }}>Wedding</Typography>
+        <Typography sx={{ color: "#fff", ml: 1, mb: 1 }}>{label}</Typography>
       </Paper>
     </Grid>
   );

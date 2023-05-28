@@ -83,11 +83,11 @@ const fetchPlanLibrary=async()=>{
           label1="Plan Title"
           label2="Description"
           label3="Prompt"
+          submit="Add"
           placeholder1="Write your Plan Title here"
           placeholder2="write a description for you plan"
           placeholder3="write a Prompt for you plan "
           open={openDialog.value}
-          submit="Add"
           onClose={() => setOpenDialog(false)}
         />
       )}

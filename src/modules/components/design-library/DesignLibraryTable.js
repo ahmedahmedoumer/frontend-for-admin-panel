@@ -1,7 +1,7 @@
 import { Card, Grid, Box } from "@mui/material";
 import DesignLibraryCard from "./DesignLibraryCard";
-import design from "../../../assets/images/design.svg";
 import bigPlus from "../../../assets/images/bigPlus.svg";
+import design from "../../../assets/images/design.svg";
 import Pagination from "../../Pagination";
 import EditeCardDialog from "./EditCardDialog";
 import { useState } from "react";
@@ -9,45 +9,58 @@ import { useState } from "react";
 export default function DesignLibraryTable(props) {
   const {pageSize,designLibrary,setCurrentPage }=props;
   const [openDialog, setOpenDialog] = useState(false);
-
-  const data = [
-    {
-      img: design,
-      label: "Wedding",
-    },
-    {
-      img: design,
-      label: "Wedding",
-    },
-    {
-      img: design,
-      label: "Wedding",
-    },
-    {
-      img: design,
-      label: "Wedding",
-    },
-    {
-      img: design,
-      label: "Wedding",
-    },
-    {
-      img: design,
-      label: "Wedding",
-    },
-    {
-      img: design,
-      label: "Wedding",
-    },
-    {
-      img: design,
-      label: "Wedding",
-    },
-    {
-      img: design,
-      label: "Wedding",
-    },
-  ];
+  const designData=designLibrary;
+  // console.log(design?designData[0].designTitle:null);
+  // const design="design.svg"
+  let data=[{
+    img:design,
+    label:"",
+  }];
+  if(designData){
+     data=designData.map((item)=>({
+      img:item.image?require(`../../../assets/images/${item.image}`).default:design,
+      label:item.designTitle?item.designTitle:"",
+     }));
+  }
+  //  data=design.map;
+  //  data = [
+  //   {
+  //     img: design,
+  //     label: "Wedding",
+  //   },
+  //   {
+  //     img: design,
+  //     label: "Wedding",
+  //   },
+  //   {
+  //     img: design,
+  //     label: "Wedding",
+  //   },
+    // {
+    //   img: design,
+    //   label: "Wedding",
+    // },
+    // {
+    //   img: design,
+    //   label: "Wedding",
+    // },
+    // {
+    //   img: design,
+    //   label: "Wedding",
+    // },
+    // {
+    //   img: design,
+    //   label: "Wedding",
+    // },
+    // {
+    //   img: design,
+    //   label: "Wedding",
+    // },
+    // {
+    //   img: design,
+    //   label: "Wedding",
+    // },
+  // ];
   return (
     <Card
       sx={{
@@ -67,6 +80,7 @@ export default function DesignLibraryTable(props) {
             openDialog={setOpenDialog}
             key={index}
             img={item.img}
+            label={item.label}
           />
         ))}
         <Grid item lg={2.4}>
