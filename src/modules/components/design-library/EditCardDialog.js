@@ -6,14 +6,56 @@ import {
   Button,
   Typography,
   IconButton,
+  TextField
 } from "@mui/material";
 import design from "../../../assets/images/design.svg";
 import editIcon from "../../../assets/images/editCardIcon1.svg";
 import downloadIcon from "../../../assets/images/editCardDialogIcon2.svg";
 import { POPPINS } from "../../../utils/config";
+import axios from 'axios';
+import { useEffect, useState } from "react";
 
 export default function EditeCardDialog(props) {
-  const { open, onClose, submitText } = props;
+  const { open, onClose,clickedDesign, submitText } = props;
+  const [design,setDesign]=useState({
+    id:clickedDesign.id,
+    label:clickedDesign.label,
+    sourceFile:clickedDesign.sourceFile,
+  }); 
+  const onChangeHandler=(e)=>{
+     e.preventDefault();
+     setDesign({...design,[e.target.name]:e.target.value});
+  }
+
+console.log(design);
+  const submitHandling=async()=>{
+     if (submitText==="Update") {
+         const update=await axios.post(`http://localhost:8000/api/update-design?designId=${design.id}`,design,{
+         headers:{
+                'Authorization':'Bearer '+localStorage.getItem('token'),
+         }
+         })
+         .then(function(response){
+             console.log(response);
+         })
+         .catch(function(error){
+            console.log(error);
+         });
+     }
+     else{
+      const add=await axios.post(`http://localhost:8000/api/add-design?designId=${design.id}`,design,{
+        headers:{
+               'Authorization':'Bearer '+localStorage.getItem('token'),
+        }
+        })
+        .then(function(response){
+            console.log(response);
+        })
+        .catch(function(error){
+           console.log(error);
+        });
+     }
+  }
   return (
     <Dialog
       sx={{
@@ -27,7 +69,7 @@ export default function EditeCardDialog(props) {
     >
       <DialogContent>
         <Box>
-          <img src={design} alt="design" width="440px" height="440px" />
+          <img src={clickedDesign.img} alt="design" width="440px" height="440px" />
         </Box>
         <Box>
           <Box sx={{ display: "flex", alignItems: "center", mt: 3 }}>
@@ -42,16 +84,20 @@ export default function EditeCardDialog(props) {
             >
               Title :
             </Typography>
-            <Typography
+            <TextField
               sx={{
                 color: "#565656",
                 fontWeight: 500,
                 fontSize: "24px",
+                width:"400px",
                 ...POPPINS,
               }}
-            >
-              A Pretty Model
-            </Typography>
+              id="designLabel"
+              name="label"
+              onChange={onChangeHandler}
+              value={design.label}
+            />
+           
           </Box>
           <Box
             sx={{
@@ -119,7 +165,7 @@ export default function EditeCardDialog(props) {
           Cancel
         </Button>
         <Button
-          onClick={onClose}
+          onClick={submitHandling}
           sx={{
             background:
               "linear-gradient(99.32deg, #B4CD93 7.91%, #427A5B 88.96%)",
@@ -132,7 +178,7 @@ export default function EditeCardDialog(props) {
             fontSize: "20px",
           }}
         >
-          {submitText ?? "Add"}
+          {submitText}
         </Button>
       </DialogActions>
     </Dialog>

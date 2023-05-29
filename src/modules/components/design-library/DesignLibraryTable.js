@@ -9,19 +9,21 @@ import { useState } from "react";
 export default function DesignLibraryTable(props) {
   const {pageSize,designLibrary,setCurrentPage }=props;
   const [openDialog, setOpenDialog] = useState(false);
-  const designData=designLibrary;
-  // console.log(design?designData[0].designTitle:null);
-  // const design="design.svg"
+  const [clickedDesign,setClickedDesign]=useState({});
   let data=[{
     img:design,
     label:"",
   }];
-  if(designData){
-     data=designData.map((item)=>({
-      img:item.image?require(`../../../assets/images/${item.image}`).default:design,
+  console.log(designLibrary);
+  if(designLibrary){
+     data=designLibrary.map((item,index)=>({
+      id:item.id?item.id:null,
+      sourceFile:item.sourceFile?item.sourceFile:null,
+      img:item.image?item.image:design,
       label:item.designTitle?item.designTitle:"",
      }));
   }
+  console.log(data);
   //  data=design.map;
   //  data = [
   //   {
@@ -78,9 +80,9 @@ export default function DesignLibraryTable(props) {
         {data.map((item, index) => (
           <DesignLibraryCard
             openDialog={setOpenDialog}
+            setClickedDesign={setClickedDesign}
             key={index}
-            img={item.img}
-            label={item.label}
+            item={item}
           />
         ))}
         <Grid item lg={2.4}>
@@ -99,6 +101,7 @@ export default function DesignLibraryTable(props) {
         </Grid>
         <EditeCardDialog
           open={openDialog}
+          clickedDesign={clickedDesign}
           onClose={() => setOpenDialog(false)}
           submitText="Update"
         />

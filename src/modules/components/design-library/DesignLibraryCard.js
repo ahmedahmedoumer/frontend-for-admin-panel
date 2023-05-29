@@ -1,10 +1,25 @@
 import { Typography, Grid, Paper } from "@mui/material";
-
+import { useState } from "react";
+import { useEffect } from "react";
 export default function DesignLibraryCard(props) {
-  const { img,label, openDialog } = props;
+  const { item, openDialog,setClickedDesign } = props;
+  const [imageSrc, setImageSrc] = useState(null);
+
+  useEffect(() => {
+    const loadImage = async () => {
+      try {
+        const imageModule = await import(`../../../assets/images/${item.img}`);
+        setImageSrc(imageModule.default);
+      } catch (error) {
+        console.error('Failed to load image:', error);
+      }
+    };
+
+    loadImage();
+  }, []);
   const styles = {
     paperContainer: {
-      backgroundImage: `url(${img})`,
+      backgroundImage: `url(${imageSrc})`,
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
       height: "240px",
@@ -19,10 +34,19 @@ export default function DesignLibraryCard(props) {
       item
       lg={2.4}
       sx={{ cursor: "pointer" }}
-      onClick={() => openDialog(true)}
+      onClick={() =>{
+        item.img=setImageSrc;
+        setClickedDesign({
+             id:item.id,
+             sourceFile:item.sourceFile,
+             img:imageSrc,
+             label:item.label,
+        })
+        openDialog(true)
+      } }
     >
       <Paper style={styles.paperContainer}>
-        <Typography sx={{ color: "#fff", ml: 1, mb: 1 }}>{label}</Typography>
+        <Typography sx={{ color: "#fff", ml: 1, mb: 1 }}>{item.label}</Typography>
       </Paper>
     </Grid>
   );

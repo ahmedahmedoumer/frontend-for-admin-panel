@@ -10,10 +10,33 @@ import {
   Button,
 } from "@mui/material";
 import { POPPINS } from "../../../utils/config";
+import { useState } from "react";
+import axios from "axios";
 
 export default function AddNewDesignDialog(props) {
   const { open, onClose, title, submitText } = props;
-
+  const [designData,setDesignData]=useState({
+    'title':null,
+    'image':null,
+    'zipFile':null,
+  });
+  const onSubmitHandler=async()=>{
+          const register=await axios.post('http://localhost:8000/api/add-design',designData,{
+            Headers:{
+              'Authorization':'Bearer '+localStorage.getItem('token'),
+            }
+          })
+          .then(function(response){
+             console.log(response);
+          })
+          .catch(function(error){
+            console.log(error);
+          });
+  }
+  const onChangeHandler=(e)=>{
+        e.preventDefault();
+        setDesignData({...designData,[e.target.name]:e.target.value});
+  }
   return (
     <Dialog
       fullWidth
@@ -52,6 +75,8 @@ export default function AddNewDesignDialog(props) {
             size="small"
             sx={{ background: "#fff" }}
             name="title"
+            value={designData.title}
+            onChange={onChangeHandler}
             id="plan-title"
             placeholder="Write your Design Title"
           />
@@ -60,22 +85,34 @@ export default function AddNewDesignDialog(props) {
           <Typography sx={{ ...labelStyle }}>Adding image</Typography>
           <Box sx={{ display: "flex", alignItems: "center", mb: 5 }}>
             <label for="file-upload" class="design-library-upload">
-              <p>Drag and drop your File here</p>
+              <p>{designData!==null?designData.image:"Drag and drop your File here"}</p>
               <p>Or</p>
               <p>Browse Files</p>
             </label>
-            <input id="file-upload" type="file" />
+            <input
+              id="file-upload"
+              type="file"
+              onChange={onChangeHandler}
+              name="image"
+              value={designData.image}
+              />
           </Box>
         </Box>
         <Box>
-          <Typography sx={{ ...labelStyle }}>AAdding zip file</Typography>
+          <Typography sx={{ ...labelStyle }}>Adding zip file</Typography>
           <Box sx={{ display: "flex", alignItems: "center", mb: 5 }}>
-            <label for="file-upload" class="design-library-upload">
-              <p>Drag and drop your File here</p>
+            <label for="zip-file" class="design-library-upload">
+            {designData!==null?designData.zipFile:"Drag and drop your File here"}
               <p>Or</p>
               <p>Browse Files</p>
             </label>
-            <input id="file-upload" type="file" />
+            <input 
+            id="zip-file" 
+            type="file"
+            onChange={onChangeHandler}
+            name="zipFile"
+            value={designData.zipFile}
+             />
           </Box>
         </Box>
       </DialogContent>
@@ -99,7 +136,7 @@ export default function AddNewDesignDialog(props) {
           Cancel
         </Button>
         <Button
-          onClick={onClose}
+          onClick={onSubmitHandler}
           sx={{
             background:
               "linear-gradient(99.32deg, #B4CD93 7.91%, #427A5B 88.96%)",
