@@ -10,33 +10,63 @@ import {
   Button,
 } from "@mui/material";
 import { POPPINS } from "../../../utils/config";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function AddNewDesignDialog(props) {
   const { open, onClose, title, submitText } = props;
+  const [submitData,setSubmitData]=useState(null);
+  const [validationMessage,setValidationMessage]=useState({
+    designTitle:null,
+    image:null,
+    sourceFile:null,
+  });
   const [designData,setDesignData]=useState({
-    'title':null,
-    'image':null,
-    'zipFile':null,
+    title:'',
+    image:null,
+    zipFile:null,
   });
   const onSubmitHandler=async()=>{
-          const register=await axios.post('http://localhost:8000/api/add-design',designData,{
-            Headers:{
+            // const data=submitData;
+            console.log(designData);
+            const formData = new FormData();
+                  formData.append('designTitle', designData.title);
+                  formData.append('image', designData.image);
+                  formData.append('sourceFile', designData.zipFile);
+          const register=await axios.post('http://localhost:8000/api/add-design',formData,{
+            headers:{
               'Authorization':'Bearer '+localStorage.getItem('token'),
+              'Content-Type': 'multipart/form-data',
             }
           })
           .then(function(response){
              console.log(response);
+             onClose();
           })
           .catch(function(error){
-            console.log(error);
+           setValidationMessage(error.response.data.errors);
           });
   }
   const onChangeHandler=(e)=>{
-        e.preventDefault();
-        setDesignData({...designData,[e.target.name]:e.target.value});
+    const {name,value,files}=e.target;
+    if(files){
+      const file = files[0];
+    setDesignData({...designData,
+      [name]: file,
+    });
+    }
+    else{
+      e.preventDefault();
+      setDesignData({...designData,[name]:value});
+    }
+
   }
+  useEffect(() => {
+    if(designData.image!==null && designData.zipFile!==null){
+      setSubmitData(designData);
+      console.log(submitData);
+    }
+}, [designData,onSubmitHandler,onChangeHandler]);
   return (
     <Dialog
       fullWidth
@@ -81,11 +111,13 @@ export default function AddNewDesignDialog(props) {
             placeholder="Write your Design Title"
           />
         </Box>
+        {validationMessage.designTitle && (<span className="alert alert-danger">{validationMessage.designTitle}</span>)}
+
         <Box>
           <Typography sx={{ ...labelStyle }}>Adding image</Typography>
           <Box sx={{ display: "flex", alignItems: "center", mb: 5 }}>
             <label for="file-upload" class="design-library-upload">
-              <p>{designData!==null?designData.image:"Drag and drop your File here"}</p>
+              <p>{designData.image?designData.image.name:"Drag and drop your File here"}</p>
               <p>Or</p>
               <p>Browse Files</p>
             </label>
@@ -94,15 +126,15 @@ export default function AddNewDesignDialog(props) {
               type="file"
               onChange={onChangeHandler}
               name="image"
-              value={designData.image}
               />
+        {validationMessage.image && (<span className="alert alert-danger">{validationMessage.image}</span>)}
           </Box>
         </Box>
         <Box>
           <Typography sx={{ ...labelStyle }}>Adding zip file</Typography>
           <Box sx={{ display: "flex", alignItems: "center", mb: 5 }}>
             <label for="zip-file" class="design-library-upload">
-            {designData!==null?designData.zipFile:"Drag and drop your File here"}
+            <p>{designData.zipFile?designData.zipFile.name:"Drag and drop your File here"}</p>
               <p>Or</p>
               <p>Browse Files</p>
             </label>
@@ -111,8 +143,9 @@ export default function AddNewDesignDialog(props) {
             type="file"
             onChange={onChangeHandler}
             name="zipFile"
-            value={designData.zipFile}
              />
+        {validationMessage.sourceFile && (<span className="alert alert-danger">{validationMessage.sourceFile}</span>)}
+
           </Box>
         </Box>
       </DialogContent>

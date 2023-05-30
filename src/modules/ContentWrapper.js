@@ -78,7 +78,7 @@ export default function ContentWrapper({ children }) {
           payload:response.data,
          });
          setIsAuthenticated(true);
-         currentPath.pathname==='/login' ? Navigate('/dashboard'):Navigate(currentPath.pathname);
+         currentPath.pathname==='/login' ||currentPath.pathname==='/*' ? Navigate('/dashboard'):Navigate(currentPath.pathname);
       })
       .catch(function(error){
         setIsAuthenticated(false);

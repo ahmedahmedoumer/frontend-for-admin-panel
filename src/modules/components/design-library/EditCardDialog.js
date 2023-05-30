@@ -18,9 +18,9 @@ import { useEffect, useState } from "react";
 export default function EditeCardDialog(props) {
   const { open, onClose,clickedDesign, submitText } = props;
   const [design,setDesign]=useState({
-    id:clickedDesign.id,
-    label:clickedDesign.label,
-    sourceFile:clickedDesign.sourceFile,
+    'id':clickedDesign.id,
+    'label':clickedDesign.label,
+    'sourceFile':clickedDesign.sourceFile,
   }); 
   const onChangeHandler=(e)=>{
      e.preventDefault();

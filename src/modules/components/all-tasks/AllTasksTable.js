@@ -132,7 +132,7 @@ function RowItem(props) {
           <Typography>{moment(item.updated_at).format('MMMM Do YYYY')}</Typography>
       </TableCell>
       <TableCell>
-        <IconButton onClick={() => setSelectedUser(item.firstName)}>
+        <IconButton onClick={() => setSelectedUser(item)}>
           <img src={view} alt="view" />
         </IconButton>
       </TableCell>

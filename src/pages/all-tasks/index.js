@@ -33,13 +33,10 @@ export default function AllTasks() {
       }
      })
      .then(function(response){
+
       console.log(response.data.data);
       setAllTasks(response.data.data);
       setPageSize(response.data.last_page);
-      // Disapatch({
-      //   type:
-      // })
-
      })
      .catch(function(error){
       console.log(error.response);
@@ -145,11 +142,14 @@ const taskData=allTasks;
         <PageHeader
           title="All Tasks"
           description="Lookup for All the All tasks"
+          selectedUser={selectedUser}
         />
       )}
 
       {selectedUser ? (
-        <UserDetiail />
+        <UserDetiail 
+        selectedUser={selectedUser}
+        />
       ) : (
         <AllTasksTable data={taskData} setSelectedUser={setSelectedUser} pageSize={pageSize} setCurrentPage={setCurrentPage} />
       )}

@@ -19,7 +19,7 @@ import redPluse from "../../../assets/images/plusRed.svg";
 import UserDetailTable from "./UserDetailTable";
 import Pagination from "../../Pagination";
 import CreateAndUpdateDialog from "../../CreateAndUpdateDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AreYouSureDialog from "../AreYouSureDialog";
 import snackbarImg from "../../../assets/images/snackbarImg.svg";
 import submitIcon from "../../../assets/images/submitPlus.svg";
@@ -27,14 +27,41 @@ import sourceIcon from "../../../assets/images/source.svg";
 import AddNewDesignDialog from "./AddNewDesignDialog";
 import AddNewPlanDialog from "./AddNewPlanDialog";
 import Sneackbar from "../../Sneckbar";
+import axios from 'axios';
 
-export default function UserDetiail() {
+export default function UserDetiail(props) {
+  const { selectedUser } =props;
   const [openDialog, setOpenDialog] = useState({});
   const [openNewPlanDialog, setOpenNewPlanDialog] = useState(false);
   const [submitDialog, setSubmitDialog] = useState({});
   const [openNewDesignDialog, setOpenNewDesignDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState({});
-
+  const [firstHalf,setFirstHalf]=useState([]);
+  const [secondHalf,setSecondHalf]=useState([]);
+  const [currentPage,setCurrentPage]=useState(1);
+  const [pageSize,setPageSize]=useState(1)
+  let UserData=selectedUser?selectedUser:null;
+  useEffect(()=>{
+    const fetchDesigns=async()=>{
+         const fetch= await axios.get(`http://localhost:8000/api/get-designs?userId=${selectedUser.id}&pageSize=${pageSize}&currentPage=${currentPage}`,{
+          headers:{
+            'Authorization':'Bearer '+localStorage.getItem('token'),
+          }
+         })
+         .then(function(response){
+          const dataLength=response.data.data.length;
+          const data=response.data.data;
+          const halfIndex=Math.ceil(dataLength/2);
+          setFirstHalf(data.slice(0,halfIndex));
+          setSecondHalf(data.slice(halfIndex));
+          setPageSize(response.last_page);
+         })
+         .then(function(error){
+          console.log(error);
+         })
+    }
+    fetchDesigns();
+  },[])
   return (
     <>
       <Card
@@ -73,6 +100,7 @@ export default function UserDetiail() {
                 size="small"
                 name="coName"
                 id="co-name"
+                value={UserData.firstName}
                 sx={{ background: "#fff" }}
                 placeholder="Company Name"
               />
@@ -86,6 +114,7 @@ export default function UserDetiail() {
                 size="small"
                 name="coIndustry"
                 id="co-industry"
+                value={UserData.lastName}
                 sx={{ background: "#fff" }}
                 placeholder="Company Industry"
               />
@@ -183,7 +212,7 @@ export default function UserDetiail() {
         }}
       >
         <Typography sx={{ fontWeight: 500, fontSize: "24px", ...POPPINS }}>
-          Total Users : 150
+          Total designs : {UserData.designs.length}
         </Typography>
         <Box display="flex">
           <Box>
@@ -324,8 +353,8 @@ export default function UserDetiail() {
         }}
       >
         <Box sx={{ display: "flex" }}>
-          <UserDetailTable setOpenDialog={setOpenDialog} />
-          <UserDetailTable setOpenDialog={setOpenDialog} />
+          <UserDetailTable setOpenDialog={setOpenDialog} designData={firstHalf}/>
+          <UserDetailTable setOpenDialog={setOpenDialog} designData={secondHalf} />
         </Box>
         <Box
           sx={{
@@ -335,7 +364,7 @@ export default function UserDetiail() {
             justifyContent: "space-between",
           }}
         >
-          <Pagination />
+          <Pagination pageSize={pageSize} setCurrentPage={setCurrentPage}  />
           <Box>
             <Button
               onClick={() => setOpenNewPlanDialog(true)}
