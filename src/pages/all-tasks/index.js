@@ -26,6 +26,7 @@ export default function AllTasks() {
   useEffect(()=>{
     fetchAllTasks();
   },[currentPage]);
+
   const fetchAllTasks=async()=>{
      const fetchData=await axios.get(`http://localhost:8000/api/all-tasks?perPage=${PerPage}&currentPage=${currentPage}`,{
       headers:{
@@ -149,6 +150,7 @@ const taskData=allTasks;
       {selectedUser ? (
         <UserDetiail 
         selectedUser={selectedUser}
+        setSelectedUser={setSelectedUser}
         />
       ) : (
         <AllTasksTable data={taskData} setSelectedUser={setSelectedUser} pageSize={pageSize} setCurrentPage={setCurrentPage} />

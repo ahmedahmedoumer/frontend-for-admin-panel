@@ -24,7 +24,12 @@ export default function CreateAndUpdateDialog(props) {
     onSubmit,
     setPlanLibrary,
     editPlanData,
+    setAllDesignData,
+    setAllPlanData,
+    userData,
+    selectedUser,
   } = props;
+const userId=selectedUser.id?selectedUser.id:null;
 const planData=editPlanData;
 const [item,setItems]=useState({
   id:planData?planData.id:null,
@@ -39,7 +44,7 @@ const data={
   description:item.description,
   prompt:item.prompt,
 };
-    if (submit==="Add") {
+    if (submit==="Add" && title==="Add A Prompt") {
       const checkValidation=await axios.post(`http://localhost:8000/api/add-planLibrary`,{data},{
         headers:{
           'Authorization':'Bearer '+localStorage.getItem('token'),
@@ -53,6 +58,23 @@ const data={
       .catch(function(error){
          console.log(error);
       });      
+    }
+    else if(submit==="Add" && title==="Add A design Row"){
+      const textOnPost=data.title;
+      const checkValidation=await axios.post(`http://localhost:8000/api/add-design-plan?userId=${userId}`,{textOnPost},{
+        headers:{
+          'Authorization':'Bearer '+localStorage.getItem('token')
+        },
+      }
+      )
+      .then(function(response){
+        setAllDesignData(response.data.data);
+          onClose();
+          // onSubmit();
+    })
+      .catch(function(error){
+       console.log(error);
+    });
     }
     else{
       const checkValidation=await axios.post(`http://localhost:8000/api/plan-library/update-plan?planId=${data.id}`,{data},{
@@ -116,7 +138,7 @@ const HandleChange=(e)=>{
             onChange={HandleChange}
           />
         </Box>
-        <Box mb={2}>
+        {title !=="Add A design Row" &&(<Box mb={2}>
           <InputLabel sx={{ ...labelStyle }} htmlFor="plan-description">
             {label2}
           </InputLabel>
@@ -131,7 +153,8 @@ const HandleChange=(e)=>{
             onChange={HandleChange}
           />
         </Box>
-        <Box mb={8}>
+        )}
+        {title !=="Add A design Row" &&(<Box mb={8}>
           <InputLabel sx={{ ...labelStyle }} htmlFor="prompt">
             {label3}
           </InputLabel>
@@ -146,6 +169,8 @@ const HandleChange=(e)=>{
             onChange={HandleChange}
           />
         </Box>
+        )}
+
       </DialogContent>
       <DialogActions
         sx={{ display: "flex", justifyContent: "center", mb: 5.78 }}>

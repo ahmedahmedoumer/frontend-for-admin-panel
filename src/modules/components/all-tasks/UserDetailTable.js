@@ -15,7 +15,7 @@ import userIconTable from "../../../assets/images/users/user1.png";
 import axios from 'axios';
 
 export default function UserDetailTable(props) {
-  const { setOpenDialog,designData } = props;
+  const { setOpenDialog,designData,setAllDesignData } = props;
   const tableColumns = [
     <TableCell key="id">Post ID</TableCell>,
     <TableCell key="text">Text on post</TableCell>,
@@ -76,7 +76,7 @@ export default function UserDetailTable(props) {
       </TableHead>
       <TableBody>
         {data.map((item, index) => (
-          <RowItem key={index} item={item} setOpenDialog={setOpenDialog} />
+          <RowItem key={index} item={item} setOpenDialog={setOpenDialog} setAllDesignData={setAllDesignData} />
         ))}
       </TableBody>
     </Table>
@@ -84,7 +84,21 @@ export default function UserDetailTable(props) {
 }
 
 function RowItem(props) {
-  const { item, setOpenDialog } = props;
+  const { item, setOpenDialog,setAllDesignData } = props;
+  const deleteHandler=(id)=>{
+    const deleteItem= axios.get(`http://localhost:8000/api/delete-design?designId=${id}`,{
+      headers:{
+        'Authorization':'Bearer '+localStorage.getItem('token'),
+      }
+    })
+    .then(function(response){
+      setAllDesignData(response.data.data);
+      console.log(response);
+    })
+    .catch(function(error){
+        console.log(error);
+    });
+  }
   return (
     <TableRow>
       <TableCell>
@@ -127,7 +141,6 @@ function RowItem(props) {
           />
           <IconButton sx={{ ml: 2 }} 
            onClick={()=>{
-            console.log(item.id);
             deleteHandler(item.id)
            }}
           >
@@ -144,16 +157,3 @@ function RowItem(props) {
   );
 }
 
-function deleteHandler(id){
-    const deleteItem= axios.post(`http://localhost:8000/api/delete-design?designId=${id}`,{
-      headers:{
-        'Authorization':'Bearer'+localStorage.getItem('token'),
-      }
-    })
-    .then(function(response){
-      console.log(response);
-    })
-    .catch(function(error){
-        console.log(error);
-    });
-  }

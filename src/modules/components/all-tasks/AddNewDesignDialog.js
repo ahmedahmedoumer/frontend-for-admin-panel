@@ -10,9 +10,38 @@ import {
   Button,
 } from "@mui/material";
 import { POPPINS } from "../../../utils/config";
+import { useState } from "react";
+import axios from 'axios';
 
 export default function AddNewDesignDialog(props) {
-  const { open, onClose, title, submitText } = props;
+  const { open, onClose, title, submitText,selectedUser } = props;
+   const userId=selectedUser?selectedUser.id:null;
+   const [fileData,setFileData]=useState({
+    userId:userId,
+    zipFile:null,
+   });
+   const onchangeHandler=(e)=>{
+    const {name,values,files}=e.target;
+        if(files){
+          const file=files[0];
+          setFileData({...fileData,[name]:file});
+        }
+   }
+   const addBulkDesign=async()=>{
+    const {userId,zipFile}=fileData
+       const addBulkDesign=await axios.post('http://localhost:8000/api/all-tasks/add-bulk-design',{userId,zipFile},{
+        headers:{
+          'Authorization':'Bearer '+localStorage.getItem('token'),
+          'Content-Type': 'multipart/form-data',
+        }
+       })
+       .then(function(response){
+         console.log(response);
+       })
+       .catch(function(error){
+        console.log(error);
+       })
+   }
 
   return (
     <Dialog
@@ -40,19 +69,21 @@ export default function AddNewDesignDialog(props) {
             name="title"
             id="post"
             sx={{ background: "#fff" }}
-            placeholder="Write your Post ID "
+            value={userId}
+            disabled
+            // placeholder="Write your Post ID "
           />
         </Box>
         <Box sx={{ mb: 1 }}>
-          <Typography sx={{ ...labelStyle }}>Adding image</Typography>
+          <Typography sx={{ ...labelStyle }}>Adding Zip file</Typography>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", mb: 5 }}>
           <label for="file-upload" class="design-file-upload">
-            <p>Drag and drop your File here</p>
+            <p>{fileData.zipFile?fileData.zipFile.name:"Drag and drop your csv File here"}</p>
             <p>Or</p>
             <p>Browse Files</p>
           </label>
-          <input id="file-upload" type="file" />
+          <input id="file-upload" onChange={onchangeHandler} name="zipFile"  type="file" />
         </Box>
       </DialogContent>
       <DialogActions
@@ -73,7 +104,7 @@ export default function AddNewDesignDialog(props) {
           Cancel
         </Button>
         <Button
-          onClick={onClose}
+          onClick={ addBulkDesign }
           sx={{
             background:
               "linear-gradient(99.32deg, #B4CD93 7.91%, #427A5B 88.96%)",

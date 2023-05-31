@@ -30,7 +30,7 @@ import Sneackbar from "../../Sneckbar";
 import axios from 'axios';
 
 export default function UserDetiail(props) {
-  const { selectedUser } =props;
+  const { selectedUser,setSelectedUser } =props;
   const [openDialog, setOpenDialog] = useState({});
   const [openNewPlanDialog, setOpenNewPlanDialog] = useState(false);
   const [submitDialog, setSubmitDialog] = useState({});
@@ -40,10 +40,14 @@ export default function UserDetiail(props) {
   const [secondHalf,setSecondHalf]=useState([]);
   const [currentPage,setCurrentPage]=useState(1);
   const [pageSize,setPageSize]=useState(1)
+
+  const [designData,setDesignData]=useState(null);
+  const [userData,setUserData]=useState([]);
+  const [allDesignData,setAllDesignData]=useState({});
   let UserData=selectedUser?selectedUser:null;
   useEffect(()=>{
     const fetchDesigns=async()=>{
-         const fetch= await axios.get(`http://localhost:8000/api/get-designs?userId=${selectedUser.id}&pageSize=${pageSize}&currentPage=${currentPage}`,{
+         const fetch= await axios.get(`http://localhost:8000/api/get-designs?userId=${selectedUser.id}&currentPage=${currentPage}`,{
           headers:{
             'Authorization':'Bearer '+localStorage.getItem('token'),
           }
@@ -52,6 +56,7 @@ export default function UserDetiail(props) {
           const dataLength=response.data.data.length;
           const data=response.data.data;
           const halfIndex=Math.ceil(dataLength/2);
+          setUserData(data);
           setFirstHalf(data.slice(0,halfIndex));
           setSecondHalf(data.slice(halfIndex));
           setPageSize(response.last_page);
@@ -61,7 +66,7 @@ export default function UserDetiail(props) {
          })
     }
     fetchDesigns();
-  },[])
+  },[allDesignData]);
   return (
     <>
       <Card
@@ -353,8 +358,8 @@ export default function UserDetiail(props) {
         }}
       >
         <Box sx={{ display: "flex" }}>
-          <UserDetailTable setOpenDialog={setOpenDialog} designData={firstHalf}/>
-          <UserDetailTable setOpenDialog={setOpenDialog} designData={secondHalf} />
+          <UserDetailTable setOpenDialog={setOpenDialog} designData={firstHalf} setAllDesignData={setAllDesignData}/>
+          <UserDetailTable setOpenDialog={setOpenDialog} designData={secondHalf} setAllDesignData={setAllDesignData} />
         </Box>
         <Box
           sx={{
@@ -389,10 +394,13 @@ export default function UserDetiail(props) {
 
       {openDialog.label === "row" && openDialog.value && (
         <CreateAndUpdateDialog
-          title="Add A Plan Row"
+          title="Add A design Row"
           label1="Text on the Post"
           label2="Caption"
           label3="Hashtags"
+          userData={userData}
+          selectedUser={selectedUser}
+          setAllDesignData={setAllDesignData}
           placeholder1="Add your text on the post here"
           placeholder2="write the plan caption here"
           placeholder3="add your hashtags here"
@@ -429,6 +437,8 @@ export default function UserDetiail(props) {
           onClose={() => setSubmitDialog(false)}
           title="Do you want to Approve the work done ?"
           submitIcon={submitIcon}
+          userID={selectedUser}
+          setSelectedUser={setSelectedUser}
           submitText="Approve"
           openSnackbar={() =>
             setOpenSnackbar({ label: "approve", value: true })
@@ -452,6 +462,8 @@ export default function UserDetiail(props) {
           title="Are you sure you want to Request Edit for the submitted work ? "
           submitIcon={submitIcon}
           submitText="Request Edit"
+          userID={selectedUser}
+          setSelectedUser={setSelectedUser}
           openSnackbar={() =>
             setOpenSnackbar({ label: "moreEdit", value: true })
           }
@@ -485,6 +497,7 @@ export default function UserDetiail(props) {
         open={openNewDesignDialog}
         onClose={() => setOpenNewDesignDialog(false)}
         title="Add A New Design"
+        selectedUser={selectedUser}
         submitText="Add"
       />
     </>
