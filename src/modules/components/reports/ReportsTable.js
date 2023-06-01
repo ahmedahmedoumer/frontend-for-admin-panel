@@ -24,7 +24,11 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 
 export default function ReportsTable(props) {
-  const { setSelectedUser,pageSize,setCurrentPage} = props;
+  const { setSelectedUser,
+          pageSize,
+          setCurrentPage,
+          setViewReportDetail
+        } = props;
    const Selector=useSelector((state)=>state);
   const tableColumns = [
     <TableCell key="name">User Name</TableCell>,
@@ -40,21 +44,33 @@ const reportData=Selector.reports_data;
 // if(reportData.length!=0){
   const reports=reportData.map((reportItem)=>({
     img:user1,
-    name:reportItem.length!=0 ? reportItem.firstName:null,
+    name:reportItem.length!==0 ? reportItem.firstName:null,
     team:[
      {
       img:team1,
-      name:reportItem.length!=0 ?reportItem.planner.firstName:null,
+      name:reportItem.length!==0 ?reportItem.planner.firstName:null,
      },
      {
        img:team2,
-       name:reportItem.length!=0 ?reportItem.designer.firstName:null,
+       name:reportItem.length!==0 ?reportItem.designer.firstName:null,
      },
     ],
-    recievedTime:reportItem.length!=0  ? [moment(reportItem.planner.created_at).format('YYYY-MM-DD hh:mm:ss'),moment(reportItem.planner.created_at).format('YYYY-MM-DD hh:mm:ss')]:[null,null],
-    status: ["approved","pending"],
-    submitDate:reportData.length!=0  ? [moment(reportItem.designer.created_at).format('YYYY-MM-DD hh:mm:ss'), moment(reportItem.designer.created_at).format('YYYY-MM-DD hh:mm:ss')]:[null,null],
-    id:reportItem.length!=0 ?[reportItem.planner.id+'/'+reportItem.id,reportItem.designer.id+'/'+reportItem.id]:[null,null],
+    recievedTime:reportItem.length!==0 
+                ? [moment(reportItem.planner.created_at).format('YYYY-MM-DD hh:mm:ss')
+                , moment(reportItem.planner.created_at).format('YYYY-MM-DD hh:mm:ss')]
+                : [null,null],
+    status: reportItem.length!==0 
+          ? [reportItem.plans[0]?reportItem.plans[0].status:"notYet"
+          , reportItem.designs[0]?reportItem.designs[0].status:"notYet"]
+          : [null,null],
+    submitDate:reportData.length!==0  
+              ? [moment(reportItem.designer.created_at).format('YYYY-MM-DD hh:mm:ss')
+              , moment(reportItem.designer.created_at).format('YYYY-MM-DD hh:mm:ss')]
+              :[null,null],
+    id:reportItem.length!==0 
+             ?[[reportItem.planner.id,reportItem.id]
+             ,[reportItem.designer.id,reportItem.id]]
+             :[null,null],
   }));
 
   return (
@@ -95,6 +111,7 @@ const reportData=Selector.reports_data;
               key={index}
               item={item}
               setSelectedUser={setSelectedUser}
+              setViewReportDetail={setViewReportDetail}
             />
           ))}
         </TableBody>
@@ -107,7 +124,11 @@ const reportData=Selector.reports_data;
 }
 
 function RowItem(props) {
-  const { item, setSelectedUser } = props;
+  const { 
+     item,
+     setSelectedUser,
+     setViewReportDetail
+     } = props;
   return (
     <TableRow>
       <TableCell>
@@ -211,8 +232,12 @@ function RowItem(props) {
       <TableCell>
       {item.id.map((id,i)=>(
         <Typography>
-        <IconButton onClick={() => setSelectedUser(true)}>
-          <img src={view} alt="view" id={id} />
+        <IconButton onClick={() =>{
+           setViewReportDetail({id,i});
+           setSelectedUser(true);
+          }}
+           >
+          <img src={view} key={i} alt="view" id={id} />
         </IconButton>
         </Typography>
          ))}

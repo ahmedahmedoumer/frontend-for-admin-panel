@@ -29,7 +29,7 @@ export default function CreateAndUpdateDialog(props) {
     userData,
     selectedUser,
   } = props;
-const userId=selectedUser.id?selectedUser.id:null;
+const userId=selectedUser ?selectedUser.id?selectedUser.id:null:null;
 const planData=editPlanData;
 const [item,setItems]=useState({
   id:planData?planData.id:null,

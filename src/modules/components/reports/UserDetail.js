@@ -8,7 +8,7 @@ import {
   Typography,
   InputAdornment,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { POPPINS } from "../../../utils/config";
 import userIcon from "../../../assets/images/user-detail.svg";
 import fileIcon from "../../../assets/images/file.svg";
@@ -25,16 +25,46 @@ import snackbarImg from "../../../assets/images/snackbarImg.svg";
 import submitIcon from "../../../assets/images/submitPlus.svg";
 import AddNewPlanDialog from "../all-tasks/AddNewPlanDialog";
 import CreateAndUpdateDialog from "../../CreateAndUpdateDialog";
+import axios from 'axios';
 
-export default function UserDetail() {
+export default function UserDetail(props) {
+  const { viewReportDetail } = props;
   const [openDialog, setOpenDialog] = useState(false);
   const [openNewPlanDialog, setOpenNewPlanDialog] = useState(false);
   const [submitDialog, setSubmitDialog] = useState({});
   const [openNewDesignDialog, setOpenNewDesignDialog] = useState({});
   const [openSnackbar, setOpenSnackbar] = useState({});
-
+  const [allPlanData,setAllPlanData]=useState([]);
+  let plannerId=null,designerId=null,userId=null;
+  if(viewReportDetail.i==0){
+    plannerId=viewReportDetail.id[0];
+    userId=viewReportDetail.id[1];
+  }
+  if(viewReportDetail.i==1){
+    designerId=viewReportDetail.id[0];
+    userId=viewReportDetail.id[1];
+  }
+  // console.log(plannerId);
+  // console.log(designerId);
+  // console.log(userId);
   console.log(openNewDesignDialog);
-
+  
+  useEffect(()=>{
+     const fetchData=async()=>{await axios.get(`http://localhost:8000/api/get-all-plan?planner=${plannerId}&userId=${userId}`,{
+          headers:{
+            'Authorization':'Bearer '+localStorage.getItem('token')
+          }
+     })
+     .then(function(response){
+      setAllPlanData(response.data.data[0]);
+      console.log(response.data.data[0]);
+     })
+     .catch(function(error){
+      console.log(error);
+     })};
+     fetchData();
+  });
+  
   return (
     <>
       <Card
@@ -74,6 +104,7 @@ export default function UserDetail() {
                 size="small"
                 name="coName"
                 id="co-name"
+                value={allPlanData?allPlanData.companyName?allPlanData.companyName.name:null:null}
                 sx={{ background: "#fff" }}
                 placeholder="Company Name"
               />
@@ -87,6 +118,7 @@ export default function UserDetail() {
                 size="small"
                 name="coIndustry"
                 id="co-industry"
+                value={allPlanData?allPlanData.companyName?allPlanData.companyName.name:null:null}
                 sx={{ background: "#fff" }}
                 placeholder="Company Industry"
               />
@@ -184,7 +216,7 @@ export default function UserDetail() {
         }}
       >
         <Typography sx={{ fontWeight: 500, fontSize: "24px", ...POPPINS }}>
-          Total Users : 150
+          Total Users :150
         </Typography>
         <Box display="flex">
           <Box>
@@ -317,7 +349,7 @@ export default function UserDetail() {
         </Box>
       </Box>
       <Box>
-        <UserDetailTable setOpenDialog={setOpenNewDesignDialog} />
+        {allPlanData &&(<UserDetailTable setOpenDialog={setOpenNewDesignDialog} allPlanData={allPlanData}/>)}
       </Box>
       <CreateAndUpdateDialog
         title="Add A Plan Row"

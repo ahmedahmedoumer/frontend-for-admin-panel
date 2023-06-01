@@ -20,7 +20,7 @@ import trashIcon from "../../../assets/images/trash.svg";
 import editIcon from "../../../assets/images/edite.svg";
 
 export default function UserDetailTable(props) {
-  const { setOpenDialog } = props;
+  const { setOpenDialog,allPlanData } = props;
 
   const tableColumns = [
     <TableCell key="postID">Post ID</TableCell>,
@@ -28,71 +28,83 @@ export default function UserDetailTable(props) {
     <TableCell key="caption">Caption</TableCell>,
     <TableCell key="hashtag">Hashtag</TableCell>,
     <TableCell key="planner">Planner</TableCell>,
-    <TableCell />,
+    <TableCell key="planners"/>,
   ];
-
-  const data = [
-    {
-      postId: "1434",
-      textOnPost: "Write you description here",
-      caption: "Write you caption here",
-      hashtag: "Write you Hashtags here",
-      planner: [
-        {
-          img: user1,
-          name: "Penny",
-        },
-      ],
-    },
-    {
-      postId: "1434",
-      textOnPost: "Write you description here",
-      caption: "Write you caption here",
-      hashtag: "Write you Hashtags here",
-      planner: [
-        {
-          img: user3,
-          name: "Penny",
-        },
-      ],
-    },
-    {
-      postId: "1434",
-      textOnPost: "Write you description here",
-      caption: "Write you caption here",
-      hashtag: "Write you Hashtags here",
-      planner: [
-        {
-          img: user4,
-          name: "Penny",
-        },
-      ],
-    },
-    {
-      postId: "1434",
-      textOnPost: "Write you description here",
-      caption: "Write you caption here",
-      hashtag: "Write you Hashtags here",
-      planner: [
-        {
-          img: user5,
-          name: "Penny",
-        },
-      ],
-    },
-    {
-      postId: "1434",
-      textOnPost: "Write you description here",
-      caption: "Write you caption here",
-      hashtag: "Write you Hashtags here",
-      planner: [
-        {
-          img: team1,
-          name: "Penny",
-        },
-      ],
-    },
-  ];
+  // let planData=allPlanData;
+  // console.log(planData);
+  const data=allPlanData.map((item)=>({
+    postId:item?item.plans?item.plans.id:null:null,
+    textOnPost:item?item.plans?item.plans.textOnPost:null:null,
+    caption:item?item.plans?item.plans.caption:null:null,
+    hashtag:item?item.plans?item.plans.hashtag:null:null,
+    planner: [
+      {
+        img: user1,
+        name: "Penny",
+      },
+  ]}))
+  // const data = [
+  //   {
+  //     postId: "1434",
+  //     textOnPost: "Write you description here",
+  //     caption: "Write you caption here",
+  //     hashtag: "Write you Hashtags here",
+  //     planner: [
+  //       {
+  //         img: user1,
+  //         name: "Penny",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     postId: "1434",
+  //     textOnPost: "Write you description here",
+  //     caption: "Write you caption here",
+  //     hashtag: "Write you Hashtags here",
+  //     planner: [
+  //       {
+  //         img: user3,
+  //         name: "Penny",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     postId: "1434",
+  //     textOnPost: "Write you description here",
+  //     caption: "Write you caption here",
+  //     hashtag: "Write you Hashtags here",
+  //     planner: [
+  //       {
+  //         img: user4,
+  //         name: "Penny",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     postId: "1434",
+  //     textOnPost: "Write you description here",
+  //     caption: "Write you caption here",
+  //     hashtag: "Write you Hashtags here",
+  //     planner: [
+  //       {
+  //         img: user5,
+  //         name: "Penny",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     postId: "1434",
+  //     textOnPost: "Write you description here",
+  //     caption: "Write you caption here",
+  //     hashtag: "Write you Hashtags here",
+  //     planner: [
+  //       {
+  //         img: team1,
+  //         name: "Penny",
+  //       },
+  //     ],
+  //   },
+  // ];
 
   return (
     <Card

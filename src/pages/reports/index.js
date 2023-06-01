@@ -10,7 +10,8 @@ import { SET_REPORTS_DATA } from "../../context/actionTypes/actionTypes";
 import { useDispatch,useSelector } from "react-redux";
 export default function Reports() {
   const Disapatch=useDispatch();
-  const Selector=useSelector((state)=>state)
+  const Selector=useSelector((state)=>state);
+  const [viewReportDetail,setViewReportDetail]=useState(null);
   const [selectedUser, setSelectedUser] = useState(false);
   const [currentPage,setCurrentPage]=useState(1);
   const [pageSize,setPageSize]=useState(null);
@@ -45,9 +46,14 @@ export default function Reports() {
       />
 
       {selectedUser ? (
-        <UserDetail />
+        <UserDetail viewReportDetail={viewReportDetail} />
       ) : (
-        <ReportsTable setSelectedUser={setSelectedUser} pageSize={pageSize} setCurrentPage={setCurrentPage} />
+        <ReportsTable 
+              setSelectedUser={setSelectedUser} 
+              pageSize={pageSize} 
+              setCurrentPage={setCurrentPage}
+              setViewReportDetail={setViewReportDetail}
+         />
       )}
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <ViewDate />
