@@ -27,7 +27,8 @@ export default function ReportsTable(props) {
   const { setSelectedUser,
           pageSize,
           setCurrentPage,
-          setViewReportDetail
+          setViewReportDetail,
+          setClickedType
         } = props;
    const Selector=useSelector((state)=>state);
   const tableColumns = [
@@ -68,8 +69,8 @@ const reportData=Selector.reports_data;
               , moment(reportItem.designer.created_at).format('YYYY-MM-DD hh:mm:ss')]
               :[null,null],
     id:reportItem.length!==0 
-             ?[[reportItem.planner.id,reportItem.id]
-             ,[reportItem.designer.id,reportItem.id]]
+             ?[reportItem.id
+             ,reportItem.id]
              :[null,null],
   }));
 
@@ -112,6 +113,7 @@ const reportData=Selector.reports_data;
               item={item}
               setSelectedUser={setSelectedUser}
               setViewReportDetail={setViewReportDetail}
+              setClickedType={setClickedType}
             />
           ))}
         </TableBody>
@@ -127,7 +129,8 @@ function RowItem(props) {
   const { 
      item,
      setSelectedUser,
-     setViewReportDetail
+     setViewReportDetail,
+     setClickedType
      } = props;
   return (
     <TableRow>
@@ -233,8 +236,16 @@ function RowItem(props) {
       {item.id.map((id,i)=>(
         <Typography>
         <IconButton onClick={() =>{
-           setViewReportDetail({id,i});
+          if(i==0){
+           setViewReportDetail(id);
+           setClickedType("planner")
+          }
+          else{
+            setViewReportDetail(id);
+            setClickedType("designner");
+          }
            setSelectedUser(true);
+           
           }}
            >
           <img src={view} key={i} alt="view" id={id} />

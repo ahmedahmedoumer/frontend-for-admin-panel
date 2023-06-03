@@ -18,10 +18,15 @@ import team1 from "../../../assets/images/users/planner.svg";
 import Pagination from "../../Pagination";
 import trashIcon from "../../../assets/images/trash.svg";
 import editIcon from "../../../assets/images/edite.svg";
+import { useEffect } from "react";
+import axios from 'axios';
 
 export default function UserDetailTable(props) {
-  const { setOpenDialog,allPlanData } = props;
+  const { setOpenDialog,planner,user } = props;
 
+
+  console.log(planner);
+  console.log(user);
   const tableColumns = [
     <TableCell key="postID">Post ID</TableCell>,
     <TableCell key="textOnPost">Text on post</TableCell>,
@@ -30,32 +35,49 @@ export default function UserDetailTable(props) {
     <TableCell key="planner">Planner</TableCell>,
     <TableCell key="planners"/>,
   ];
+  useEffect(()=>{
+      const fetchPlan=async()=>{
+         await axios.get(`http://localhost:8000/api/getAllListOfplans?planId=${planner}&userId=${user.id}`,{
+          headers:{
+            'Authorization':'Bearer '+localStorage.getItem('token')
+          }
+        })
+        .then(function(response){
+          console.log(response);
+        })
+        .catch(function(error){
+          console.log(error);
+        })
+      }
+      fetchPlan();
+  },[]);
   // let planData=allPlanData;
   // console.log(planData);
-  const data=allPlanData.map((item)=>({
-    postId:item?item.plans?item.plans.id:null:null,
-    textOnPost:item?item.plans?item.plans.textOnPost:null:null,
-    caption:item?item.plans?item.plans.caption:null:null,
-    hashtag:item?item.plans?item.plans.hashtag:null:null,
-    planner: [
-      {
-        img: user1,
-        name: "Penny",
-      },
-  ]}))
-  // const data = [
-  //   {
-  //     postId: "1434",
-  //     textOnPost: "Write you description here",
-  //     caption: "Write you caption here",
-  //     hashtag: "Write you Hashtags here",
-  //     planner: [
-  //       {
-  //         img: user1,
-  //         name: "Penny",
-  //       },
-  //     ],
-  //   },
+  // const data=allPlanData.map((item)=>({
+  //   postId:item?item.plans?item.plans.id:null:null,
+  //   textOnPost:item?item.plans?item.plans.textOnPost:null:null,
+  //   caption:item?item.plans?item.plans.caption:null:null,
+  //   hashtag:item?item.plans?item.plans.hashtag:null:null,
+  //   planner: [
+  //     {
+  //       img: user1,
+  //       name: "Penny",
+  //     },
+  // ]}))
+  const data = [
+    {
+      postId: "1434",
+      textOnPost: "Write you description here",
+      caption: "Write you caption here",
+      hashtag: "Write you Hashtags here",
+      planner: [
+        {
+          img: user1,
+          name: "Penny",
+        },
+      ],
+    },
+  ];
   //   {
   //     postId: "1434",
   //     textOnPost: "Write you description here",

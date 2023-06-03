@@ -25,45 +25,53 @@ import snackbarImg from "../../../assets/images/snackbarImg.svg";
 import submitIcon from "../../../assets/images/submitPlus.svg";
 import AddNewPlanDialog from "../all-tasks/AddNewPlanDialog";
 import CreateAndUpdateDialog from "../../CreateAndUpdateDialog";
+import { useSelector } from "react-redux";
 import axios from 'axios';
 
 export default function UserDetail(props) {
-  const { viewReportDetail } = props;
+  const { viewReportDetail,clickedType } = props;
   const [openDialog, setOpenDialog] = useState(false);
   const [openNewPlanDialog, setOpenNewPlanDialog] = useState(false);
   const [submitDialog, setSubmitDialog] = useState({});
   const [openNewDesignDialog, setOpenNewDesignDialog] = useState({});
   const [openSnackbar, setOpenSnackbar] = useState({});
-  const [allPlanData,setAllPlanData]=useState([]);
+  const [user,setUser]=useState([]);
+  const [planner,setPlanner]=useState(null);
+  const [designner,setDesignner]=useState(null);
+  const Selector= useSelector((state)=>state.reports_data);
+  // console.log(Selector);
   let plannerId=null,designerId=null,userId=null;
-  if(viewReportDetail.i==0){
-    plannerId=viewReportDetail.id[0];
-    userId=viewReportDetail.id[1];
-  }
-  if(viewReportDetail.i==1){
-    designerId=viewReportDetail.id[0];
-    userId=viewReportDetail.id[1];
-  }
-  // console.log(plannerId);
-  // console.log(designerId);
-  // console.log(userId);
+  console.log(clickedType);
+  console.log(viewReportDetail);
+  userId=viewReportDetail;
+  // if(viewReportDetail.i==0){
+  //   plannerId=viewReportDetail.id[0];
+  //   userId=viewReportDetail.id[1];
+  // }
+  // if(viewReportDetail.i==1){
+  //   designerId=viewReportDetail.id[0];
+  //   userId=viewReportDetail.id[1];
+  // }
+ 
   console.log(openNewDesignDialog);
   
   useEffect(()=>{
-     const fetchData=async()=>{await axios.get(`http://localhost:8000/api/get-all-plan?planner=${plannerId}&userId=${userId}`,{
+     const fetchData=async()=>{await axios.get(`http://localhost:8000/api/getSingleuser?userId=${userId}`,{
           headers:{
             'Authorization':'Bearer '+localStorage.getItem('token')
           }
      })
      .then(function(response){
-      setAllPlanData(response.data.data[0]);
-      console.log(response.data.data[0]);
+      console.log(response);
+      setUser(response.data);
+      setPlanner(response.data.planners_id);
+      setDesignner(response.data.designers_id);
      })
      .catch(function(error){
       console.log(error);
      })};
      fetchData();
-  });
+  },[]);
   
   return (
     <>
@@ -104,7 +112,7 @@ export default function UserDetail(props) {
                 size="small"
                 name="coName"
                 id="co-name"
-                value={allPlanData?allPlanData.companyName?allPlanData.companyName.name:null:null}
+                value={user?user.companyName?user.companyName.name:null:null}
                 sx={{ background: "#fff" }}
                 placeholder="Company Name"
               />
@@ -118,7 +126,7 @@ export default function UserDetail(props) {
                 size="small"
                 name="coIndustry"
                 id="co-industry"
-                value={allPlanData?allPlanData.companyName?allPlanData.companyName.name:null:null}
+                value={user?user.companyName?user.companyName.name:null:null}
                 sx={{ background: "#fff" }}
                 placeholder="Company Industry"
               />
@@ -349,7 +357,7 @@ export default function UserDetail(props) {
         </Box>
       </Box>
       <Box>
-        {allPlanData &&(<UserDetailTable setOpenDialog={setOpenNewDesignDialog} allPlanData={allPlanData}/>)}
+        {planner && clickedType==="planner" &&(<UserDetailTable setOpenDialog={setOpenNewDesignDialog} planner={planner} user={user}/>)}
       </Box>
       <CreateAndUpdateDialog
         title="Add A Plan Row"

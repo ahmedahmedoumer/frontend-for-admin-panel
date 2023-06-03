@@ -15,6 +15,7 @@ export default function Reports() {
   const [selectedUser, setSelectedUser] = useState(false);
   const [currentPage,setCurrentPage]=useState(1);
   const [pageSize,setPageSize]=useState(null);
+  const [clickedType,setClickedType]=useState({});
   const perPage=5;
   const fetchReport=async()=>{
     await axios.get(`http://localhost:8000/api/reports?perPage=${perPage}&currentPage=${currentPage}`,{
@@ -46,13 +47,14 @@ export default function Reports() {
       />
 
       {selectedUser ? (
-        <UserDetail viewReportDetail={viewReportDetail} />
+        <UserDetail viewReportDetail={viewReportDetail} clickedType={clickedType} />
       ) : (
         <ReportsTable 
               setSelectedUser={setSelectedUser} 
               pageSize={pageSize} 
               setCurrentPage={setCurrentPage}
               setViewReportDetail={setViewReportDetail}
+              setClickedType={setClickedType}
          />
       )}
       <Box sx={{ display: "flex", justifyContent: "center" }}>
