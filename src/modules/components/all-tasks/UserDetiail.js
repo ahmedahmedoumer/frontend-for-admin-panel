@@ -28,7 +28,6 @@ import AddNewDesignDialog from "./AddNewDesignDialog";
 import AddNewPlanDialog from "./AddNewPlanDialog";
 import Sneackbar from "../../Sneckbar";
 import axios from 'axios';
-
 export default function UserDetiail(props) {
   const { selectedUser,setSelectedUser } =props;
   const [openDialog, setOpenDialog] = useState({});
@@ -39,7 +38,7 @@ export default function UserDetiail(props) {
   const [firstHalf,setFirstHalf]=useState([]);
   const [secondHalf,setSecondHalf]=useState([]);
   const [currentPage,setCurrentPage]=useState(1);
-  const [pageSize,setPageSize]=useState(1)
+  const [pageSize,setPageSize]=useState(1);
 
   const [designData,setDesignData]=useState(null);
   const [userData,setUserData]=useState([]);

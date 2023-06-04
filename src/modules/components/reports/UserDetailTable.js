@@ -18,15 +18,16 @@ import team1 from "../../../assets/images/users/planner.svg";
 import Pagination from "../../Pagination";
 import trashIcon from "../../../assets/images/trash.svg";
 import editIcon from "../../../assets/images/edite.svg";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from 'axios';
 
 export default function UserDetailTable(props) {
-  const { setOpenDialog,planner,user } = props;
-
-
+  const { setOpenDialog,planner,user,planData } = props;
+   const [plans,setPlans]=useState([]);
+   const [responseMessage,setResponsemessage]=useState(null)
+   const [currentPage,setCurrentPage]=useState(1);
+   const pageSize=4;
   console.log(planner);
-  console.log(user);
   const tableColumns = [
     <TableCell key="postID">Post ID</TableCell>,
     <TableCell key="textOnPost">Text on post</TableCell>,
@@ -35,6 +36,7 @@ export default function UserDetailTable(props) {
     <TableCell key="planner">Planner</TableCell>,
     <TableCell key="planners"/>,
   ];
+
   useEffect(()=>{
       const fetchPlan=async()=>{
          await axios.get(`http://localhost:8000/api/getAllListOfplans?planId=${planner}&userId=${user.id}`,{
@@ -43,6 +45,8 @@ export default function UserDetailTable(props) {
           }
         })
         .then(function(response){
+          setPlans(response.data.data);
+          setCurrentPage(response.data.last_page);
           console.log(response);
         })
         .catch(function(error){
@@ -50,84 +54,19 @@ export default function UserDetailTable(props) {
         })
       }
       fetchPlan();
-  },[]);
-  // let planData=allPlanData;
-  // console.log(planData);
-  // const data=allPlanData.map((item)=>({
-  //   postId:item?item.plans?item.plans.id:null:null,
-  //   textOnPost:item?item.plans?item.plans.textOnPost:null:null,
-  //   caption:item?item.plans?item.plans.caption:null:null,
-  //   hashtag:item?item.plans?item.plans.hashtag:null:null,
-  //   planner: [
-  //     {
-  //       img: user1,
-  //       name: "Penny",
-  //     },
-  // ]}))
-  const data = [
-    {
-      postId: "1434",
-      textOnPost: "Write you description here",
-      caption: "Write you caption here",
-      hashtag: "Write you Hashtags here",
-      planner: [
-        {
-          img: user1,
-          name: "Penny",
-        },
-      ],
-    },
-  ];
-  //   {
-  //     postId: "1434",
-  //     textOnPost: "Write you description here",
-  //     caption: "Write you caption here",
-  //     hashtag: "Write you Hashtags here",
-  //     planner: [
-  //       {
-  //         img: user3,
-  //         name: "Penny",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     postId: "1434",
-  //     textOnPost: "Write you description here",
-  //     caption: "Write you caption here",
-  //     hashtag: "Write you Hashtags here",
-  //     planner: [
-  //       {
-  //         img: user4,
-  //         name: "Penny",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     postId: "1434",
-  //     textOnPost: "Write you description here",
-  //     caption: "Write you caption here",
-  //     hashtag: "Write you Hashtags here",
-  //     planner: [
-  //       {
-  //         img: user5,
-  //         name: "Penny",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     postId: "1434",
-  //     textOnPost: "Write you description here",
-  //     caption: "Write you caption here",
-  //     hashtag: "Write you Hashtags here",
-  //     planner: [
-  //       {
-  //         img: team1,
-  //         name: "Penny",
-  //       },
-  //     ],
-  //   },
-  // ];
-
+  },[planData]);
+  const data=plans.map((item)=>({
+    postId: item?item.id:null,
+    textOnPost: item?item.textOnPost:null,
+    caption: item?item.caption:null,
+    hashtag: item?item.hashTag:null,
+    planner: [
+      {
+        img: user1,
+        name: item?item.planner?item.planner.id:null:null,
+      },
+    ],
+  }));
   return (
     <Card
       sx={{
@@ -172,7 +111,19 @@ export default function UserDetailTable(props) {
     </Card>
   );
 }
-
+const deletePlan=async(postId)=>{
+  const deletePlan=await axios.delete(`http://localhost:8000/api/deletePlan?planId=${postId}`,{
+    headers:{
+      'Authorization':'Bearer '+localStorage.getItem('token'),
+    }
+  })
+  .then(function(response){
+    console.log(response);
+  }) 
+  .catch(function(error){
+    console.log(error);
+  });
+}
 function RowItem(props) {
   const { item, setOpenDialog } = props;
   return (
@@ -186,28 +137,28 @@ function RowItem(props) {
       </TableCell>
       <TableCell>
         <TextField
-          sx={{ background: "#fff", borderRadius: 2 }}
+          sx={{ background: "#fff", borderRadius: 2 ,maxHeight:"6rem",overflowY:"auto"}}
           fullWidth
           multiline
-          row={2}
+          row={4}
           placeholder={item.caption}
         />
       </TableCell>
       <TableCell>
         <TextField
-          sx={{ background: "#fff", borderRadius: 2 }}
+          sx={{ background: "#fff", borderRadius: 2 ,maxHeight:"6rem",overflowY:"auto"}}
           fullWidth
           multiline
-          row={2}
+          row={4}
           placeholder={item.caption}
         />
       </TableCell>
       <TableCell>
         <TextField
-          sx={{ background: "#fff", borderRadius: 2 }}
+          sx={{ background: "#fff", borderRadius: 2, maxHeight:"6rem" ,overflowY:"auto"}}
           fullWidth
           multiline
-          row={2}
+          row={4}
           placeholder={item.hashtag}
         />
       </TableCell>
@@ -226,7 +177,7 @@ function RowItem(props) {
         ))}
       </TableCell>
       <TableCell>
-        <IconButton>
+        <IconButton onClick={()=>deletePlan(item.postId)}>
           <img src={trashIcon} alt="trashIcon" />
         </IconButton>
         <IconButton

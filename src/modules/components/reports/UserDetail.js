@@ -35,6 +35,7 @@ export default function UserDetail(props) {
   const [submitDialog, setSubmitDialog] = useState({});
   const [openNewDesignDialog, setOpenNewDesignDialog] = useState({});
   const [openSnackbar, setOpenSnackbar] = useState({});
+  const [planData,setAllPlanData]=useState([]);
   const [user,setUser]=useState([]);
   const [planner,setPlanner]=useState(null);
   const [designner,setDesignner]=useState(null);
@@ -357,13 +358,14 @@ export default function UserDetail(props) {
         </Box>
       </Box>
       <Box>
-        {planner && clickedType==="planner" &&(<UserDetailTable setOpenDialog={setOpenNewDesignDialog} planner={planner} user={user}/>)}
+        {planner && clickedType==="planner" &&(<UserDetailTable setOpenDialog={setOpenNewDesignDialog} planner={planner} user={user} planData={planData}/>)}
       </Box>
       <CreateAndUpdateDialog
         title="Add A Plan Row"
         label1="Text on the Post"
         label2="Caption"
         label3="Hashtags"
+        userData={user}
         placeholder1="Add your text on the post here"
         placeholder2="write the plan caption here"
         placeholder3="add your hashtags here"
@@ -375,8 +377,9 @@ export default function UserDetail(props) {
         <AddNewDesignDialog
           open={openNewDesignDialog.value}
           onClose={() => setOpenNewDesignDialog(false)}
-          title="Add A New Design"
+          title="Add A New bulk plan"
           submitText="Add"
+          userData={user}
         />
       )}
 
@@ -401,7 +404,8 @@ export default function UserDetail(props) {
           onClose={() => setSubmitDialog(false)}
           title="Do you want to Approve the work done ?"
           submitIcon={submitIcon}
-          submitText="Approve"
+          submitText="Approve request plan"
+          userID={user}
           openSnackbar={() =>
             setOpenSnackbar({ label: "approve", value: true })
           }
@@ -423,7 +427,8 @@ export default function UserDetail(props) {
           onClose={() => setSubmitDialog(false)}
           title="Are you sure you want to Request Edit for the submitted work ? "
           submitIcon={submitIcon}
-          submitText="Request Edit"
+          submitText="Request plan for Edit"
+          userID={user}
           openSnackbar={() =>
             setOpenSnackbar({ label: "moreEdit", value: true })
           }

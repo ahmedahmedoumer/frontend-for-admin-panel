@@ -14,8 +14,14 @@ import { useState } from "react";
 import axios from 'axios';
 
 export default function AddNewDesignDialog(props) {
-  const { open, onClose, title, submitText,selectedUser } = props;
-   const userId=selectedUser?selectedUser.id:null;
+  const { open, onClose, title, submitText,selectedUser ,userData} = props;
+   let userId=null;
+if(title==="Add A New bulk plan"){
+  userId=userData.id?userData.id:null;
+}
+else{
+  userId=selectedUser?selectedUser.id:null;
+}
    const [fileData,setFileData]=useState({
     userId:userId,
     zipFile:null,
@@ -27,22 +33,39 @@ export default function AddNewDesignDialog(props) {
           setFileData({...fileData,[name]:file});
         }
    }
-   const addBulkDesign=async()=>{
-    const {userId,zipFile}=fileData
-       const addBulkDesign=await axios.post('http://localhost:8000/api/all-tasks/add-bulk-design',{userId,zipFile},{
-        headers:{
-          'Authorization':'Bearer '+localStorage.getItem('token'),
-          'Content-Type': 'multipart/form-data',
-        }
-       })
-       .then(function(response){
-         console.log(response);
-       })
-       .catch(function(error){
-        console.log(error);
-       })
+   const addBulk=async()=>{
+       if(title==="Add A New bulk plan"){
+          const {userId,zipFile}=fileData
+             const addBulkDesign=await axios.post('http://localhost:8000/api/all-tasks/add-bulk-plan',{userId,zipFile},{
+              headers:{
+                'Authorization':'Bearer '+localStorage.getItem('token'),
+                'Content-Type': 'multipart/form-data',
+              }
+             })
+             .then(function(response){
+               console.log(response);
+             })
+             .catch(function(error){
+              console.log(error);
+             })
+       }
+       else{
+            const {userId,zipFile}=fileData
+               const addBulkDesign= axios.post('http://localhost:8000/api/all-tasks/add-bulk-design',{userId,zipFile},{
+                headers:{
+                  'Authorization':'Bearer '+localStorage.getItem('token'),
+                  'Content-Type': 'multipart/form-data',
+                }
+               })
+               .then(function(response){
+                 console.log(response);
+               })
+               .catch(function(error){
+                console.log(error);
+               })
+           }      
    }
-
+  
   return (
     <Dialog
       fullWidth
@@ -104,7 +127,7 @@ export default function AddNewDesignDialog(props) {
           Cancel
         </Button>
         <Button
-          onClick={ addBulkDesign }
+          onClick={ addBulk }
           sx={{
             background:
               "linear-gradient(99.32deg, #B4CD93 7.91%, #427A5B 88.96%)",

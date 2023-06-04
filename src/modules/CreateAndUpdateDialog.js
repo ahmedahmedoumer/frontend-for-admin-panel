@@ -29,6 +29,7 @@ export default function CreateAndUpdateDialog(props) {
     userData,
     selectedUser,
   } = props;
+  const [validationError,setValidationError]=useState([]);
 const userId=selectedUser ?selectedUser.id?selectedUser.id:null:null;
 const planData=editPlanData;
 const [item,setItems]=useState({
@@ -76,6 +77,27 @@ const data={
        console.log(error);
     });
     }
+    else if(title==="Add A Plan Row"){
+      const id=userData.id;
+      const textOnPost=data.title;
+      const hashTag=data.description;
+      const caption=data.prompt;
+
+      const addPlanRow=await axios.post('http://localhost:8000/api/addPlanRow',{id,textOnPost,hashTag,caption},{
+        headers:{
+          'Authorization':'Bearer '+localStorage.getItem('token'),
+        }
+      })
+      .then(function(response){
+        // setAllPlanData(response.data.data);
+        onClose();
+        console.log(response);
+      })
+      .catch(function(error){
+       setValidationError(error.response.data.errors);
+        console.log(error);
+      });
+    }
     else{
       const checkValidation=await axios.post(`http://localhost:8000/api/plan-library/update-plan?planId=${data.id}`,{data},{
           headers:{
@@ -95,6 +117,7 @@ const data={
 const HandleChange=(e)=>{
       e.preventDefault();
       setItems({...item,[e.target.name]:e.target.value});
+      validationError?setValidationError([]):setValidationError([])
 }
   return (
     <Dialog
@@ -137,6 +160,7 @@ const HandleChange=(e)=>{
             value={item.title}
             onChange={HandleChange}
           />
+      {validationError.textOnPost&&(<span className="alert alert-danger">{validationError.textOnPost}</span>)}
         </Box>
         {title !=="Add A design Row" &&(<Box mb={2}>
           <InputLabel sx={{ ...labelStyle }} htmlFor="plan-description">
@@ -154,6 +178,8 @@ const HandleChange=(e)=>{
           />
         </Box>
         )}
+      {validationError.hashTag&&(<span className="alert alert-danger">{validationError.hashTag}</span>)}
+
         {title !=="Add A design Row" &&(<Box mb={8}>
           <InputLabel sx={{ ...labelStyle }} htmlFor="prompt">
             {label3}
@@ -170,8 +196,9 @@ const HandleChange=(e)=>{
           />
         </Box>
         )}
+        {validationError.caption&&(<span className="alert alert-danger">{validationError.caption}</span>)}
 
-      </DialogContent>
+        </DialogContent>
       <DialogActions
         sx={{ display: "flex", justifyContent: "center", mb: 5.78 }}>
         <Button

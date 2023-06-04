@@ -119,6 +119,34 @@ export default function AreYouSureDialog(props) {
          console.log(error);
        });
      }
+     else if(submitText==="Request plan for Edit"){
+      const userId=userID.id;
+      const requestEditForPlan=await axios.get(`http://localhost:8000/api/all-tasks/request-plan-for-need-edit?userID=${userId}`,{
+        headers:{
+          'Authorization':'Bearer '+localStorage.getItem('token'),
+        }
+      })
+      .then(function(response){
+        console.log(response);
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+     }
+     else if(submitText==="Approve request plan"){
+      const userId=userID.id;
+      const requestApprovePlan=await axios.get(`http://localhost:8000/api/plan/approve?userID=${userId}`,{
+        headers:{
+          'Authorization':'Bearer '+localStorage.getItem('token'),
+        }
+      })
+      .then(function(response){
+        console.log(response);
+      })
+      .catch(function(error){
+        console.log(error);
+      });
+     }
 
     if (openSnackbar) {
       openSnackbar();
