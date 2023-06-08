@@ -242,7 +242,7 @@ function RowItem(props) {
             width: "100%",
           }}
         >
-          <img src='/ahmed/oumer.jpg' alt={""} />
+          <img src={`http://localhost:8000/api/storage/${item.img}`} alt={""} />
           <Typography sx={{ ml: 2 }}>{item.firstName}</Typography>
         </Box>
       </TableCell>
