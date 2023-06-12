@@ -32,7 +32,7 @@ const { setOpenDialog,teamMembers, pageSize,setCurrentPage,setEditorDialog,setUp
  const teamMembersData=teamMembers;
   const data=teamMembersData.map((teamMembers)=>({
     id:teamMembers.id,
-    img: user1,
+    img: teamMembers.img,
     firstName: teamMembers.firstName,
     lastName: teamMembers.lastName,
     email: teamMembers.email,
@@ -101,7 +101,7 @@ function RowItem(props) {
             width: "100%",
           }}
         >
-          <img src={item.img} alt={"sample data"} />
+        <img src={`http://localhost:8000/api/storage/${item.img}`}  alt={"sample data"} />
           <Typography sx={{ ml: 2 }}>{item.firstName}</Typography>
         </Box>
       </TableCell>

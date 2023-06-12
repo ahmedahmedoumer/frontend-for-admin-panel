@@ -79,7 +79,7 @@ export default function UserDetiail(props) {
       >
         <Grid container alignItems="center" spacing={3}>
           <Grid item lg={1}>
-            <img src={userIcon} alt="user" />
+          <img src={`http://localhost:8000/api/storage/${selectedUser.img}`} alt="user" />
           </Grid>
           <Grid
             item

@@ -22,9 +22,9 @@ export default function UserDetailTable(props) {
     <TableCell key="design">Design</TableCell>,
   ];
   const data=designData.map((item)=>({
-       id:item.id,
-       textOnPost:item.textOnPost,
-       userImg:userIconTable,
+    id:item.id,
+    textOnPost:item.textOnPost,
+    userImg:item.designer?item.designer.img:'user1.png',
   }));
 
    
@@ -134,11 +134,11 @@ function RowItem(props) {
       </TableCell>
       <TableCell>
         <Box display="flex" alignItem="center" justifyContent="center">
-          <img
-            src={item.userImg}
-            style={{ width: "32px", height: "32px" }}
-            alt={item.id}
-          />
+        <img
+        src={`http://localhost:8000/api/storage/${item.userImg}`}
+        style={{ width: "32px", height: "32px" }}
+        alt={item.userImg}
+      />
           <IconButton sx={{ ml: 2 }} 
            onClick={()=>{
             deleteHandler(item.id)

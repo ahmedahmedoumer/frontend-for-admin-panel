@@ -44,16 +44,16 @@ console.log(Selector.reports_data);
 const reportData=Selector.reports_data;
 // if(reportData.length!=0){
   const reports=reportData.map((reportItem)=>({
-    img:user1,
+    img:reportItem.length!==0 ? reportItem.img:user1,
     name:reportItem.length!==0 ? reportItem.firstName:null,
     team:[
      {
-      img:team1,
+      img:reportItem.length!==0 ?reportItem.planner?reportItem.planner.img:'team1':'team1',
       name:reportItem.length!==0 ?reportItem.planner.firstName:null,
      },
      {
-       img:team2,
-       name:reportItem.length!==0 ?reportItem.designer.firstName:null,
+      img:reportItem.length!==0 ?reportItem.designer?reportItem.designer.img:'team2':'team2',
+      name:reportItem.length!==0 ?reportItem.designer.firstName:null,
      },
     ],
     recievedTime:reportItem.length!==0 
@@ -144,7 +144,7 @@ function RowItem(props) {
             width: "100%",
           }}
         >
-          <img src={item.img} alt={item.name} />
+        <img src={`http://localhost:8000/api/storage/${item.img}`} alt={item.name} />
           <Typography
             sx={{ ml: 2, fontSize: "16px", fontWeight: 500, color: "#808080" }}
           >
@@ -165,11 +165,11 @@ function RowItem(props) {
               width: "100%",
             }}
           >
-            <img
-              src={team.img}
-              alt={team.name}
-              style={{ width: "20px", height: "20px" }}
-            />
+          <img
+          src={`http://localhost:8000/api/storage/${team.img}`}
+          alt={team.name}
+          style={{ width: "20px", height: "20px" }}
+        />
             <Typography
               sx={{
                 ml: 1,

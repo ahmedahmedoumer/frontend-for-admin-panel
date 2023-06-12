@@ -19,7 +19,7 @@ export default function DesignLibraryCard(props) {
   }, []);
   const styles = {
     paperContainer: {
-      backgroundImage: `url(${imageSrc})`,
+      backgroundImage: `url(http://localhost:8000/api/storage/${item.img?item.img:'design.svg'})`,
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
       height: "240px",

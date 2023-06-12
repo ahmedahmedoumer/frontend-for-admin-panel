@@ -90,7 +90,7 @@ function RowItem(props) {
             width: "100%",
           }}
         >
-          <img src={item.img} alt={item.firstName} />
+        <img src={`http://localhost:8000/api/storage/${item.img?item.img:'userAvatar2.png'}`} alt={item.img} />
           <Typography
             sx={{ ml: 2, fontSize: "16px", fontWeight: 500, color: "#808080" }}
           >

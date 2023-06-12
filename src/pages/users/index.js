@@ -164,7 +164,7 @@ export default function Users() {
                   >
                     Planner
                   </Typography>
-                  <img src={plannerUserIcon} alt="PlannerUserIcon" />
+                  <img src={`http://localhost:8000/api/storage/${allUsers.planner?allUsers.planner.img:'user1.png'}`} alt="PlannerUserIcon" />
                 </Box>
                 <Box
                   onClick={() =>
@@ -183,14 +183,14 @@ export default function Users() {
                   >
                     Designer
                   </Typography>
-                  <img src={plannerUserIcon} alt="PlannerUserIcon" />
+                  <img src={`http://localhost:8000/api/storage/${allUsers.designer?allUsers.designer.img:'user1.png'}`} alt="DesignnerUserIcon" />
                 </Box>
               </Box>
               <Box
                 className="userAvatar"
                 sx={{ ml: "10px", mr: "24px", position: "relative" }}
               >
-                <img src={userAvatar2} alt="userAvatar2" />
+              <img src={`http://localhost:8000/api/storage/${allUsers?allUsers.img:'user1.png'}`} alt="userAvatar2" />
                 <IconButton
                   onClick={() => setUploadOpenDialog(true)}
                   sx={{ position: "absolute", bottom: "-4px", right: "-8px" }}

@@ -45,10 +45,12 @@ export default function CreateAndUpdateDialog(props) {
    const planner=plannerData.map((planner)=>({
     id:planner.id,
     name:planner.firstName,
+    img:planner.img,
     })); 
     const designer=designnerData.map((designner)=>({
         id:designner.id,
         name:designner.firstName,   
+        img:designner.img,
     }));
    const getAllPlannerAndDesigner=async()=>{
        const fetch=await axios.get('http://localhost:8000/api/users',{
@@ -97,7 +99,7 @@ export default function CreateAndUpdateDialog(props) {
           }}
         >
           <Box>
-            <img src={user1} alt="user1" />
+          <img src={`http://localhost:8000/api/storage/${userData.length!=0 ? userData.img:'user1.png'}`} alt="userAvatar2" />
             <Typography
               sx={{
                 fontWeight: 500,
@@ -111,7 +113,7 @@ export default function CreateAndUpdateDialog(props) {
           </Box>
           <Box sx={{ mt: -5, mx: 1.5 }}>_ _ _</Box>
           <Box>
-            <img src={user2} alt="user1" />
+          <img src={`http://localhost:8000/api/storage/${userData.length!=0 && openDialog=='designer'  ? userData.designer.img:userData.planner.img}`} alt="userAvatar2" />
             <Typography
               sx={{
                 fontWeight: 500,
@@ -207,7 +209,7 @@ export default function CreateAndUpdateDialog(props) {
                   borderBottom: "1px solid #ccc",
                 }}
               >
-                <img src={userSelectIcon} />
+              <img src={`http://localhost:8000/api/storage/${option.img}`} alt="userAvatar2" />
                 <Typography
                   sx={{
                     mr: 5,
