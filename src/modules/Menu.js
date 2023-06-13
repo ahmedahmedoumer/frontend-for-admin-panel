@@ -11,7 +11,7 @@ export default function Menu(props) {
     }
     const logoutHandler=()=>{
       setTitle("Are you sure you want to logout ?");
-      setHeader("Editing A Profile Picture");
+      // setHeader("Editing A Profile Picture");
       setEditorDialog('adminProfileUpdate');
       setSubmitText("yes Logout");
       openSubmit();

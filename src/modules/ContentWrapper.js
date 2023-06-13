@@ -581,7 +581,11 @@ checkAuthenticated();
             >
               <img src={bell} alt="bell" />
             </IconButton>
-            <Avatar sx={{ width: "32px", height: "32px", mr: 1, ml: 0.88 }} />
+            <IconButton
+              ref={notificationRef}
+             >
+             <img src={`http://localhost:8000/api/storage/${userData.user.img}`} alt="bell" />
+            </IconButton>
             <Box
               sx={{ cursor: "pointer" }}
               ref={ref}

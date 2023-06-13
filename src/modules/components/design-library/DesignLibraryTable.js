@@ -11,7 +11,7 @@ export default function DesignLibraryTable(props) {
   const [openDialog, setOpenDialog] = useState(false);
   const [clickedDesign,setClickedDesign]=useState({});
   let data=[{
-    img:design,
+    img:'design1.png',
     label:"",
   }];
   console.log(designLibrary);
@@ -19,7 +19,7 @@ export default function DesignLibraryTable(props) {
      data=designLibrary.map((item,index)=>({
       id:item.id?item.id:null,
       sourceFile:item.sourceFile?item.sourceFile:null,
-      img:item.image?item.image:design,
+      img:item.image?item.image:'design1.png',
       label:item.designTitle?item.designTitle:"",
      }));
   }

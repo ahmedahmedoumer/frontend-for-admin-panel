@@ -4,6 +4,10 @@ import userIcon from "../../../assets/images/userIcon.svg";
 import { useSelector } from "react-redux";
 
 export default function UserCard() {
+  const imageStyle = {
+    width: '100%', 
+    height: 'auto',
+  };
 const user=useSelector(state=>state.user) || null;
   return (
     <Card
@@ -24,9 +28,11 @@ const user=useSelector(state=>state.user) || null;
             sx={{
               mt: 3,
               ml: 6,
+              width: 100, 
+              height: 'auto',
             }}
           >
-            <img src={userIcon} alt="user" />
+            <img style={imageStyle} src={`http://localhost:8000/api/storage/${user.img}`} alt="user" />
           </Grid>
         </Grid>
         <Grid

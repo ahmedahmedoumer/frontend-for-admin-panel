@@ -3,20 +3,6 @@ import { useState } from "react";
 import { useEffect } from "react";
 export default function DesignLibraryCard(props) {
   const { item, openDialog,setClickedDesign } = props;
-  const [imageSrc, setImageSrc] = useState(null);
-
-  useEffect(() => {
-    const loadImage = async () => {
-      try {
-        const imageModule = await import(`../../../assets/images/${item.img}`);
-        setImageSrc(imageModule.default);
-      } catch (error) {
-        console.error('Failed to load image:', error);
-      }
-    };
-
-    loadImage();
-  }, []);
   const styles = {
     paperContainer: {
       backgroundImage: `url(http://localhost:8000/api/storage/${item.img?item.img:'design.svg'})`,
@@ -35,11 +21,10 @@ export default function DesignLibraryCard(props) {
       lg={2.4}
       sx={{ cursor: "pointer" }}
       onClick={() =>{
-        item.img=setImageSrc;
         setClickedDesign({
              id:item.id,
              sourceFile:item.sourceFile,
-             img:imageSrc,
+             img:item.img,
              label:item.label,
         })
         openDialog(true)

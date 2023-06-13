@@ -8,7 +8,7 @@ import {
   IconButton,
   TextField
 } from "@mui/material";
-import design from "../../../assets/images/design.svg";
+import design1 from "../../../assets/images/design.svg";
 import editIcon from "../../../assets/images/editCardIcon1.svg";
 import downloadIcon from "../../../assets/images/editCardDialogIcon2.svg";
 import { POPPINS } from "../../../utils/config";
@@ -17,20 +17,68 @@ import { useEffect, useState } from "react";
 
 export default function EditeCardDialog(props) {
   const { open, onClose,clickedDesign, submitText } = props;
-  const [design,setDesign]=useState({
-    'id':clickedDesign.id,
-    'label':clickedDesign.label,
-    'sourceFile':clickedDesign.sourceFile,
-  }); 
+const [design,setDesign]=useState({});
+
+   useEffect(()=>{
+    const setDesignData=()=>{
+          if(clickedDesign.length!==0){
+            setDesign(
+              {
+              img:clickedDesign.img,
+              id:clickedDesign.id,
+              label:clickedDesign.label,
+              sourceFile:clickedDesign.sourceFile,
+              }
+            );}
+        }
+        setDesignData();
+   },[clickedDesign]); 
+
+
+   console.log(clickedDesign);
+   console.log(design);
   const onChangeHandler=(e)=>{
      e.preventDefault();
      setDesign({...design,[e.target.name]:e.target.value});
   }
 
 console.log(design);
+  
+  const downloaSourceFile=async()=>{
+          const fileName=design.sourceFile;
+          const token=localStorage.getItem('token');
+          const download=await axios.get(`http://localhost:8000/api/downloadFile?fileName=${fileName}`,{
+            headers:{
+              'Authorization':'Bearer '+token
+            },
+            responseType: 'blob'
+          })
+          .then(function(response){
+            const url = URL.createObjectURL(response.data);
+
+            // Create a link element and trigger the download
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            link.click();
+      
+            // Clean up the temporary URL
+            URL.revokeObjectURL(url);
+            onClose();
+          })
+          .catch(function(error){
+            console.log(error);
+          });
+        }
+
   const submitHandling=async()=>{
      if (submitText==="Update") {
-         const update=await axios.post(`http://localhost:8000/api/update-design?designId=${design.id}`,design,{
+         const requestData={
+             designTitle:design.label,
+             image:design.img,
+             sourceFile:design.sourceFile,
+         }
+         const update=await axios.post(`http://localhost:8000/api/update-design?designId=${design.id}`,requestData,{
          headers:{
                 'Authorization':'Bearer '+localStorage.getItem('token'),
          }
@@ -56,6 +104,8 @@ console.log(design);
         });
      }
   }
+
+
   return (
     <Dialog
       sx={{
@@ -69,7 +119,7 @@ console.log(design);
     >
       <DialogContent>
         <Box>
-          <img src={clickedDesign.img} alt="design" width="440px" height="440px" />
+          <img src={`http://localhost:8000/api/storage/${clickedDesign.img}`} alt="design" width="440px" height="440px" />
         </Box>
         <Box>
           <Box sx={{ display: "flex", alignItems: "center", mt: 3 }}>
@@ -119,6 +169,7 @@ console.log(design);
                 Zip file :
               </Typography>
               <Button
+              onClick={downloaSourceFile} 
                 sx={{
                   textTransform: "unset",
                   color: "#565656",
@@ -133,7 +184,8 @@ console.log(design);
               <IconButton>
                 <img src={editIcon} alt="edit" />
               </IconButton>
-              <IconButton>
+              <IconButton
+              onClick={downloaSourceFile}>
                 <img src={downloadIcon} alt="edit" />
               </IconButton>
             </Box>

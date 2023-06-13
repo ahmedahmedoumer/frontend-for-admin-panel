@@ -13,7 +13,8 @@ import {
   MDBInput,
 }
 from 'mdb-react-ui-kit';
-import { Alert } from "@mui/material";
+// import { Alert } from "@mui/material";
+import Alert from '../../modules/Alert';
 import { LOGIN_USER,SET_lOGIN } from '../../context/actionTypes/actionTypes';
 
 function App() {
@@ -23,7 +24,7 @@ const dispatch = useDispatch();
         email:'',
         password:'',
     }
-  const [AlertMessage,setAlert]=useState(null);
+  const [AlertMessage,setAlertMessage]=useState({});
   const navigate = useNavigate();
   const [Error,setError]=useState({
     emailValidation:'',
@@ -35,31 +36,29 @@ const dispatch = useDispatch();
     const {email,password}=values;
        await axios.post("http://localhost:8000/api/login",{email,password})
        .then(function(response){
+        console.log(response);
              if(response.data.status===200){
-                // console.log("successfully loged in");
                 localStorage.setItem('token',response.data.token);
                 dispatch({
                     type:LOGIN_USER,
                     payload:response.data.user,
                 });
-                // console.log(User);
                 navigate('/dashboard');
-             }
-             else{
-                setAlert(response.data.message);
-                // console.log(Alert);
              }
         })
        .catch((error)=>{
-        if (error.status===422) {
+        console.log(error.response.status);
+        if (error.response.status===422) {
             setError({ emailValidation:error.response.data.errors.email,
                        passwordValidation:error.response.data.errors.password
             });
-        //    console.log(Error);
         }
-        // console.log(error);
-        //   console.log(error.response.data.errors.email);
-         
+        else if(error.response.status===401){
+            setAlertMessage(true);
+        }
+        else{
+           setAlertMessage(false);
+        }
        });
   
   }
@@ -67,10 +66,9 @@ const dispatch = useDispatch();
          setValues({...values,[e.target.name]:e.target.value});
   }
   const onClose=()=>{
-    setAlert(null);
+    setAlertMessage(null);
   }
   return (
-     
       <MDBContainer className="my-5">
           <MDBCard>
               <MDBRow className="g-0">
@@ -86,7 +84,7 @@ const dispatch = useDispatch();
                               <img src={logo} alt="logo" style={{ marginBottom: "64px" }} />
                               </span>
                           </div>
-                          {AlertMessage !==null && <Alert severity="error" onClose={onClose}>{AlertMessage}</Alert>}
+                          {AlertMessage && <Alert text={"Incorrect Username Or password"} type={"danger"} setAlertMessage={setAlertMessage}/>}
                           <h5
                               className="fw-normal my-4 pb-3"
                               style={{ letterSpacing: "1px" }}
