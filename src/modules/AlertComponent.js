@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert';
+import { Alert } from '@mui/material';
 
-const Alert = (props) => {
+const AlertComponent = (props) => {
   const {type,text,setAlertMessage}=props;
   const [showAlert, setShowAlert] = useState(true);
 
@@ -17,9 +19,7 @@ const Alert = (props) => {
     return null; // Hide the alert if showAlert is false
   }
 
-  const alertClassName = ` alert ${type}`;
-
-  return <div className={alertClassName} >{text}</div>;
+  return <Alert severity={type}>{text}</Alert>;
 };
 
-export default Alert;
+export default AlertComponent;

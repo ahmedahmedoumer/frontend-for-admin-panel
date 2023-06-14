@@ -17,6 +17,7 @@ import user6 from "../../../assets/images/users/user6.png";
 import planner from "../../../assets/images/users/planner.svg";
 import creator from "../../../assets/images/users/creator.png";
 import view from "../../../assets/images/view.svg";
+import Loading from "../../Loading";
 import axios from 'axios';
 import { useEffect,useState } from 'react';
 import { useDispatch,useSelector } from "react-redux";
@@ -24,6 +25,7 @@ import Pagination from "../../Pagination";
 import { SET_ALL_USERS_DATA } from "../../../context/actionTypes/actionTypes";
 
 export default function UsersTable() {
+  const [isLoading,setIsLoading]=useState(false);
   const [userData,setUserData]=useState([]);
   const [currentPage,setCurrentPage]=useState(1);
   const [pageSize,setPageSize]=useState(null);
@@ -35,6 +37,7 @@ export default function UsersTable() {
     getAllUsers();
    },[currentPage]);
    const getAllUsers=async()=>{
+        setIsLoading(true);
         const fetch=await axios.get(`http://localhost:8000/api/all-users?perPage=${perPage}&currentPage=${currentPage}`,{
           headers:{
             'Authorization':'Bearer '+ localStorage.getItem('token'),
@@ -44,12 +47,14 @@ export default function UsersTable() {
           console.log(response.data.last_page);
           setPageSize(response.data.last_page);
           setUserData(response.data.data);
+          setIsLoading(false);
           //  Dispatch({
           //   type:SET_ALL_USERS_DATA,
           //   payload:response.data,
           //  })
         })
         .catch(function(error){
+          setIsLoading(false);
           console.log(error);
         });
    }
@@ -212,7 +217,9 @@ console.log(userData);
         }}
       >
         <TableHead>
+           
           <TableRow>{tableColumns}</TableRow>
+          <Loading isLoading={isLoading}/>
         </TableHead>
         <TableBody>
           {userData.map((item, index) => (

@@ -6,24 +6,28 @@ import NewProjectChart from "../../modules/components/dashboard/NewProjectChart"
 import NewTasksChart from "../../modules/components/dashboard/NewTasksChart";
 import ViewDate from "../../modules/ViewDate";
 import UserCard from "../../modules/components/dashboard/UserCard";
+import Loading from '../../modules/Loading';
 import { useDispatch,useSelector } from "react-redux";
 import { SET_DASHBOARD_DATA } from '../../context/actionTypes/actionTypes';
 import { useNavigate,useLocation } from "react-router-dom";
 import Axios from 'axios'
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 
 export default function Dashboard() {
   const currentPath=useLocation();
+  const [isLoading,setIsLoading]=useState(false);
   const dispatch=useDispatch();
   const navigate=useNavigate();
   const selector=useSelector((state)=>state);
   const dashboard_data=async()=>{
+     setIsLoading(true);
     await Axios.get('http://localhost:8000/api/dashboard',{
       headers:{
         'Authorization':'Bearer '+localStorage.getItem('token'),
       }
     })
     .then(function(response){
+      setIsLoading(false);
       // console.log(response.data);
             dispatch({
               type:SET_DASHBOARD_DATA,
@@ -32,6 +36,7 @@ export default function Dashboard() {
             // console.log(selector.dashboard_data);
     })
     .catch(function(error){
+          setIsLoading(false);
           navigate('/login'); 
           error.response===401 ? navigate('/login'): console.log(error.response.data.message);
     });
@@ -42,6 +47,7 @@ useEffect(()=>{
   return (
     <ViewContainer>
       <Typography
+
         sx={{
           fontWeight: 500,
           fontSize: "30px",
@@ -52,6 +58,7 @@ useEffect(()=>{
       >
         Overview
       </Typography>
+      <Loading isLoading={isLoading}/>
       <Grid container spacing={5}>
         <Grid item xs={6}>
           <CurrentProjectChart />

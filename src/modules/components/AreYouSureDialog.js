@@ -34,6 +34,7 @@ export default function AreYouSureDialog(props) {
       });
     }
     else if(submit && submitText=="yes Update"){
+      console.log(updateUserData);
            const update=await axios.post('http://localhost:8000/api/update-profile',updateUserData,{
             headers:{
               'Authorization':'Bearer '+localStorage.getItem('token'),

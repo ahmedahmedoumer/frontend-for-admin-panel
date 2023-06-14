@@ -23,7 +23,7 @@ import NotificationPopover from "./NotificationPopover";
 import { LOGIN_USER,GET_LOGIN_USER } from '../context/actionTypes/actionTypes';
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import Loading from "./Loading";
 import {
   DashboardIcon,
   AllUsersIcon,
@@ -48,6 +48,7 @@ export default function ContentWrapper({ children }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [submitDialog, setSubmitDialog] = useState(false);
   const [active, setActive] = useState(false);
+  const [isLoading,setIsLoading]=useState(false);
   const ref = useRef(null);
   const notificationRef = useRef(null);
   const userData = useSelector((state)=>state);
@@ -66,6 +67,7 @@ export default function ContentWrapper({ children }) {
   };
   useEffect(()=>{
     async function checkAuthenticated(){
+      setIsLoading(true);
       try {
       const check = await axios.get('http://localhost:8000/api/user', {
         headers: {
@@ -73,6 +75,7 @@ export default function ContentWrapper({ children }) {
         }
       })
       .then(function(response){
+        setIsLoading(false);
          dispatch({
           type:LOGIN_USER,
           payload:response.data,
@@ -81,6 +84,7 @@ export default function ContentWrapper({ children }) {
          currentPath.pathname==='/login' ||currentPath.pathname==='/*' ? Navigate('/dashboard'):Navigate(currentPath.pathname);
       })
       .catch(function(error){
+        setIsLoading(false);
         setIsAuthenticated(false);
         Navigate('/login');
       });
@@ -173,6 +177,7 @@ checkAuthenticated();
                   </Typography>
                 </Button>
               </Link>
+              <Loading isLoading={isLoading}/>
             </ListItem>
             <ListItem
               sx={{
@@ -571,7 +576,7 @@ checkAuthenticated();
                 ml: 2.2,
               }}
             >
-              Welcome back, {userData.user.firstName ||null}
+              Welcome back, {userData?userData.user?userData.user.firstName:null:null}
             </Typography>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", pt: 1 }}>
@@ -584,7 +589,7 @@ checkAuthenticated();
             <IconButton
               ref={notificationRef}
              >
-             <img src={`http://localhost:8000/api/storage/${userData.user.img}`} alt="bell" />
+             <img src={`http://localhost:8000/api/storage/${userData?userData.user?userData.user.img:'user1':'user1'}`} alt="bell" />
             </IconButton>
             <Box
               sx={{ cursor: "pointer" }}
@@ -598,12 +603,12 @@ checkAuthenticated();
                   fontSize: "16px",
                 }}
               >
-              {userData.user.firstName+"   "}
+              {userData?userData.user?userData.user.firstName:null:null} {"     "}
               </Typography>
               <Typography
                 sx={{ color: "#B8B8B8", fontWeight: 400, fontSize: "12px" }}
               >
-              {userData.user.email}
+              {userData?userData.user?userData.user.email:null:null}
               </Typography>
             </Box>
           </Box>

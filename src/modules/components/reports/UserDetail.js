@@ -25,12 +25,14 @@ import snackbarImg from "../../../assets/images/snackbarImg.svg";
 import submitIcon from "../../../assets/images/submitPlus.svg";
 import AddNewPlanDialog from "../all-tasks/AddNewPlanDialog";
 import CreateAndUpdateDialog from "../../CreateAndUpdateDialog";
+import Loading from "../../Loading";
 import { useSelector } from "react-redux";
 import axios from 'axios';
 
 export default function UserDetail(props) {
   const { viewReportDetail,clickedType } = props;
   const [openDialog, setOpenDialog] = useState(false);
+  const [isLoading,setIsLoading]=useState(false);
   const [openNewPlanDialog, setOpenNewPlanDialog] = useState(false);
   const [submitDialog, setSubmitDialog] = useState({});
   const [openNewDesignDialog, setOpenNewDesignDialog] = useState({});
@@ -57,18 +59,21 @@ export default function UserDetail(props) {
   console.log(openNewDesignDialog);
   
   useEffect(()=>{
+     setIsLoading(true);
      const fetchData=async()=>{await axios.get(`http://localhost:8000/api/getSingleuser?userId=${userId}`,{
           headers:{
             'Authorization':'Bearer '+localStorage.getItem('token')
           }
      })
      .then(function(response){
+      setIsLoading(false);
       console.log(response);
       setUser(response.data);
       setPlanner(response.data.planners_id);
       setDesignner(response.data.designers_id);
      })
      .catch(function(error){
+      setIsLoading(fasle);
       console.log(error);
      })};
      fetchData();
@@ -87,6 +92,7 @@ export default function UserDetail(props) {
         }}
       >
         <Grid container alignItems="center" spacing={3}>
+        <Loading isLoading={isLoading} />
           <Grid item lg={1}>
             <img src={userIcon} alt="user" />
           </Grid>

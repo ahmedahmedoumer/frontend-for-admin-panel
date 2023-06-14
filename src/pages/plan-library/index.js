@@ -9,10 +9,12 @@ import CreateAndUpdateDialog from "../../modules/CreateAndUpdateDialog";
 import { useState,useEffect } from "react";
 import { useDispatch,useSelector } from "react-redux";
 import axios from 'axios';
+import Loading from "../../modules/Loading";
 
 export default function PlanLibrary() {
   const [openDialog, setOpenDialog] = useState({});
   const [pageSize,setPageSize]=useState(1);
+  const [isLoading,setIsLoading]=useState(false);
   const [currentPage,setCurrentPage]=useState(1);
   const [planLibrary,setPlanLibrary]=useState([]);
   const [editPlanData,setEditPlanData]=useState([]);
@@ -23,23 +25,27 @@ useEffect(()=>{
   fetchPlanLibrary();
 },[currentPage,openDialog]);
 const fetchPlanLibrary=async()=>{
+      setIsLoading(true);
       const fetchData=await axios.get(`http://localhost:8000/api/plan-library?perPage=${perPage}&currentPage=${currentPage}`,{
         headers:{
           'Authorization':'Bearer '+localStorage.getItem('token'),
         }
       })
       .then(function(response){
+        setIsLoading(false);
         //  console.log(response.data.data);
          setPlanLibrary(response.data.data);
          setPageSize(response.data.last_page);
       })
       .catch(function(error){
+        setIsLoading(false);
          console.log(error.response.data);
       });
 }
   return (
     <ViewContainer>
       <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Loading isLoading={isLoading}/>
         <PageHeader
           sx={{ flex: 1 }}
           title="Plan Library"

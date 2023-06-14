@@ -27,9 +27,10 @@ import sourceIcon from "../../../assets/images/source.svg";
 import AddNewDesignDialog from "./AddNewDesignDialog";
 import AddNewPlanDialog from "./AddNewPlanDialog";
 import Sneackbar from "../../Sneckbar";
+import Loading from "../../Loading";
 import axios from 'axios';
 export default function UserDetiail(props) {
-  const { selectedUser,setSelectedUser } =props;
+  const { selectedUser,setSelectedUser, isLoading,setIsLoading} =props;
   const [openDialog, setOpenDialog] = useState({});
   const [openNewPlanDialog, setOpenNewPlanDialog] = useState(false);
   const [submitDialog, setSubmitDialog] = useState({});
@@ -46,12 +47,14 @@ export default function UserDetiail(props) {
   let UserData=selectedUser?selectedUser:null;
   useEffect(()=>{
     const fetchDesigns=async()=>{
+         setIsLoading(true);
          const fetch= await axios.get(`http://localhost:8000/api/get-designs?userId=${selectedUser.id}&currentPage=${currentPage}`,{
           headers:{
             'Authorization':'Bearer '+localStorage.getItem('token'),
           }
          })
          .then(function(response){
+          setIsLoading(false);
           const dataLength=response.data.data.length;
           const data=response.data.data;
           const halfIndex=Math.ceil(dataLength/2);
@@ -60,7 +63,8 @@ export default function UserDetiail(props) {
           setSecondHalf(data.slice(halfIndex));
           setPageSize(response.last_page);
          })
-         .then(function(error){
+         .catch(function(error){
+          setIsLoading(false);
           console.log(error);
          })
     }
@@ -78,6 +82,7 @@ export default function UserDetiail(props) {
         }}
       >
         <Grid container alignItems="center" spacing={3}>
+          <Loading isLoading={isLoading} />
           <Grid item lg={1}>
           <img src={`http://localhost:8000/api/storage/${selectedUser.img}`} alt="user" />
           </Grid>

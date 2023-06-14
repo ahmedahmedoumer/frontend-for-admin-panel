@@ -6,8 +6,10 @@ export default function Menu(props) {
   const { anchorEl, open, onClose, openDialog,openSubmit,setTitle,setSubmitText,setEditorDialog,setHeader } = props;
   const handleClick=()=>{
              setTitle("Are you sure you want to Update the Profile ?");
-             setHeader("Editing Admin Profile Picture");
+            //  setHeader("Editing Admin Profile Picture");
+             setEditorDialog('adminProfile');
              setSubmitText("yes Update");
+             openDialog();
     }
     const logoutHandler=()=>{
       setTitle("Are you sure you want to logout ?");

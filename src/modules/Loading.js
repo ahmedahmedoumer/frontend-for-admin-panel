@@ -1,4 +1,5 @@
 import React from 'react';
+import { CircularProgress, Modal, Backdrop } from '@mui/material';
 
 const Loading = ({ isLoading }) => {
   if (!isLoading) {
@@ -6,9 +7,18 @@ const Loading = ({ isLoading }) => {
   }
 
   return (
-    <div className="loading-overlay">
-      <div className="loading-spinner"></div>
-    </div>
+    <Modal
+    open={isLoading}
+    closeAfterTransition
+    BackdropComponent={Backdrop}
+    BackdropProps={{
+      timeout: 500,
+      style: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+    }}
+    style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+  >
+    <CircularProgress />
+  </Modal>
   );
 };
 

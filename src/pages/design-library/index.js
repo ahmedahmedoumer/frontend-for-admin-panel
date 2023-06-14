@@ -8,10 +8,12 @@ import ViewDate from "../../modules/ViewDate";
 import AddNewDesignDialog from "../../modules/components/design-library/AddNewDesignDialog";
 import { useDispatch,useSelector } from "react-redux";
 import axios from 'axios';
+import Loading from "../../modules/Loading";
 export default function DesignLibrary() {
   const [openDialog, setOpenDialog] = useState(false);
   const [designLibrary,setDesignLibrary]=useState([]);
   const [currentPage,setCurrentPage]=useState(1);
+  const [isLoading,setIsLoading]=useState(false);
   const [pageSize,setPageSize]=useState(null);
   const perPage=9;
 
@@ -19,23 +21,27 @@ export default function DesignLibrary() {
     fetchDesignLibrary();
   },[currentPage]);
   const fetchDesignLibrary=async()=>{
+      setIsLoading(true);
       const fetchData=await axios.get(`http://localhost:8000/api/design-library?perPage=${perPage}&currentPage=${currentPage}`,{
         headers:{
           'Authorization':'Bearer ' + localStorage.getItem('token'),
         }
       })
       .then(function(response){
+        setIsLoading(false);
           // console.log(response.data.data);
           setDesignLibrary(response.data.data);
           setPageSize(response.data.last_page);
       })
       .catch(function(error){
+        setIsLoading(true);
           console.log(error);
       });
   }
   return (
     <ViewContainer>
       <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Loading isLoading={isLoading} />
         <PageHeader
           sx={{ flex: 1 }}
           title="Plan Library"

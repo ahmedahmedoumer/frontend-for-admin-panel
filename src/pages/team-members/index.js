@@ -8,9 +8,11 @@ import { useState,useEffect } from "react";
 import EditUserDialog from "../../modules/EditUserDialog";
 import AreYouSureDialog from "../../modules/components/AreYouSureDialog";
 import axios from 'axios'
+import Loading from "../../modules/Loading";
 export default function TeamMembers() {
 
   const [teamMembers,setTeamMembers]=useState([]);
+  const [isLoading,setIsloading]=useState(false);
   const [editorDialog,setEditorDialog]=useState(null);
   const [updatedData,setUpdatedData]=useState([]);
   const [openDialog, setOpenDialog] = useState({});
@@ -23,17 +25,20 @@ export default function TeamMembers() {
   },[currentPage]);
    
   const getTeamMembersData=async()=>{
+    setIsloading(true);
     const fetch=await axios.get(`http://localhost:8000/api/all-team-members?perPage=${perPage}&currentPage=${currentPage}`,{
       headers:{
         'Authorization':'Bearer '+localStorage.getItem('token'),
       },
     })
     .then(function(response){
+      setIsloading(false);
       console.log(response.data.data);
       setTeamMembers(response.data.data);
       setPageSize(response.data.last_page);
     })
     .catch(function(error){
+      setIsloading(false);
       console.log(error.response);
     });
   }
@@ -41,6 +46,7 @@ export default function TeamMembers() {
   return (
     <ViewContainer>
       <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Loading isLoading={isLoading}/>
         <PageHeader
           sx={{ flex: 1 }}
           title="Team Members"

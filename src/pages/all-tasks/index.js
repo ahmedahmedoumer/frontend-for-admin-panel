@@ -14,10 +14,12 @@ import user6 from "../../assets/images/users/user6.png";
 import arrow from "../../assets/images/arrow.svg";
 import axios from 'axios';
 import { useDispatch,useSelector } from "react-redux";
+import Loading from "../../modules/Loading";
 
 export default function AllTasks() {
   const Dispatch=useDispatch();
   const Selector=useSelector(state=>state);
+  const [isLoading,setIsLoading]=useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [currentPage,setCurrentPage]=useState(1);
   const [pageSize,setPageSize]=useState(null);
@@ -28,18 +30,20 @@ export default function AllTasks() {
   },[currentPage]);
 
   const fetchAllTasks=async()=>{
+     setIsLoading(true);
      const fetchData=await axios.get(`http://localhost:8000/api/all-tasks?perPage=${PerPage}&currentPage=${currentPage}`,{
       headers:{
         'Authorization':'Bearer ' + localStorage.getItem('token')
       }
      })
      .then(function(response){
-
+      setIsLoading(false);
       console.log(response.data.data);
       setAllTasks(response.data.data);
       setPageSize(response.data.last_page);
      })
      .catch(function(error){
+      setIsLoading(false);
       console.log(error.response);
      });
   }
@@ -97,6 +101,7 @@ const taskData=allTasks;
 
   return (
     <ViewContainer>
+    <loading isLoading={isLoading} />
       {selectedUser ? (
         <Box sx={{ mb: 1 }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -151,9 +156,11 @@ const taskData=allTasks;
         <UserDetiail 
         selectedUser={selectedUser}
         setSelectedUser={setSelectedUser}
+        isLoading={isLoading} 
+        setIsLoading={setIsLoading}
         />
       ) : (
-        <AllTasksTable data={taskData} setSelectedUser={setSelectedUser} pageSize={pageSize} setCurrentPage={setCurrentPage} />
+        <AllTasksTable data={taskData} isLoading={isLoading} setIsLoading={setIsLoading} setSelectedUser={setSelectedUser} pageSize={pageSize} setCurrentPage={setCurrentPage} />
       )}
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <ViewDate />

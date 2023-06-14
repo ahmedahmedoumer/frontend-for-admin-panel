@@ -35,7 +35,6 @@ const { open, onClose, openSubmit, submitText,setUpdateUserData,ValidationData,e
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
-  
   const handleDrop = (event) => {
     event.preventDefault();
     setFile(event.dataTransfer.files[0]);
@@ -45,8 +44,10 @@ const { open, onClose, openSubmit, submitText,setUpdateUserData,ValidationData,e
     event.preventDefault();
   };
   const adduserData=[];
+  console.log(editorDialog);
+  console.log(User);
 let userData=(editorDialog=="adminProfile")?User:(editorDialog=="addTeamMember")?[]:updatedData;
-
+console.log(userData);
   useEffect(()=>{
     setUserArray({
       id:userData?userData.id:null,
@@ -81,7 +82,7 @@ const onChangeHandler=(e)=>{
       }
 }
 const submiHandling=async()=>{
-  setUpdatedData(userArray);
+   (editorDialog=="adminProfile")?setUpdateUserData(userArray):setUpdatedData(userArray);
   const checkValidation=await axios.post(`http://localhost:8000/api/UpdatecheckValidation?updateId=${userArray.id}`,userArray,{
      headers:{
       'Authorization':'Bearer '+localStorage.getItem('token'),

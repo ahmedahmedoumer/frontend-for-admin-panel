@@ -21,6 +21,7 @@ import moment from "moment";
 import Pagination from "../../Pagination";
 import view from "../../../assets/images/view.svg";
 import { useSelector } from "react-redux";
+import Loading from "../../Loading";
 import { useState } from "react";
 
 export default function ReportsTable(props) {
@@ -30,8 +31,9 @@ export default function ReportsTable(props) {
           setViewReportDetail,
           setClickedType
         } = props;
+   const [isLoading,setIsLoading]=useState(false);
    const Selector=useSelector((state)=>state);
-  const tableColumns = [
+   const tableColumns = [
     <TableCell key="name">User Name</TableCell>,
     <TableCell key="title">Team</TableCell>,
     <TableCell key="email">Status</TableCell>,
@@ -85,6 +87,7 @@ const reportData=Selector.reports_data;
         boxShadow: "none",
       }}
     >
+       <Loading isLoading={isLoading} setIsLoading={setIsLoading} /> 
       <Table
         sx={{
           background: "transparent",

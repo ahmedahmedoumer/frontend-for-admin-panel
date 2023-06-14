@@ -14,7 +14,8 @@ import {
 }
 from 'mdb-react-ui-kit';
 // import { Alert } from "@mui/material";
-import Alert from '../../modules/Alert';
+import AlertComponent from '../../modules/AlertComponent';
+import Loading from '../../modules/Loading';
 import { LOGIN_USER,SET_lOGIN } from '../../context/actionTypes/actionTypes';
 
 function App() {
@@ -25,6 +26,7 @@ const dispatch = useDispatch();
         password:'',
     }
   const [AlertMessage,setAlertMessage]=useState({});
+  const [isLoading,setIsLoading]=useState(false);
   const navigate = useNavigate();
   const [Error,setError]=useState({
     emailValidation:'',
@@ -33,6 +35,7 @@ const dispatch = useDispatch();
   const [values,setValues]=useState(initialState);
   const handleLogin=async(e)=> {
     e.preventDefault();
+    setIsLoading(true);
     const {email,password}=values;
        await axios.post("http://localhost:8000/api/login",{email,password})
        .then(function(response){
@@ -43,11 +46,13 @@ const dispatch = useDispatch();
                     type:LOGIN_USER,
                     payload:response.data.user,
                 });
+                setIsLoading(false);
                 navigate('/dashboard');
              }
         })
        .catch((error)=>{
         console.log(error.response.status);
+        setIsLoading(false);
         if (error.response.status===422) {
             setError({ emailValidation:error.response.data.errors.email,
                        passwordValidation:error.response.data.errors.password
@@ -84,12 +89,14 @@ const dispatch = useDispatch();
                               <img src={logo} alt="logo" style={{ marginBottom: "64px" }} />
                               </span>
                           </div>
-                          {AlertMessage && <Alert text={"Incorrect Username Or password"} type={"danger"} setAlertMessage={setAlertMessage}/>}
+                          <Loading isLoading={isLoading}/>
+
+                          {AlertMessage && <AlertComponent text={"Incorrect Username Or password"} type="error"  setAlertMessage={setAlertMessage}/>}
                           <h5
                               className="fw-normal my-4 pb-3"
                               style={{ letterSpacing: "1px" }}
                           >
-                              Sign into your account
+                          <center> Sign into your account</center>
                           </h5>{" "}
                           <form className='form-control' onSubmit={handleLogin}>
                               <MDBInput

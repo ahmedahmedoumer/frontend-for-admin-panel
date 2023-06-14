@@ -28,10 +28,12 @@ import CreateAndUpdateDialog from "../../modules/components/users/CreateAndUpdat
 import AreYouSureDialog from "../../modules/components/AreYouSureDialog";
 import UploadPhotoDialog from "../../modules/components/users/UploadPhotoDialog";
 import { useDispatch,useSelector } from "react-redux";
+import Loading from "../../modules/Loading";
 import { SET_ALL_USERS_DATA } from "../../context/actionTypes/actionTypes";
 
 export default function Users() {
   const [openDialog, setOpenDialog] = useState({});
+  const [isLoading,setIsLoading]=useState(false);
   const [openSubmitDialog, setSubmitOpenDialog] = useState({});
   const [assignedValue,setAssignedValue]=useState(null);
   const [designerId,setDesignerId]=useState(null);
@@ -49,12 +51,14 @@ export default function Users() {
     users();
   },[pageSize,currentPage,perPage,openDialog]);
   const users=async()=>{
+    setIsLoading(true);
     const usersData=await axios.get(`http://localhost:8000/api/all-users?perPage=${perPage}&currentPage=${currentPage}`,{
       headers:{
         'Authorization':'Bearer '+localStorage.getItem('token'),
       }
     })
     .then(function(response){
+      setIsLoading(false);
       const data=response.data.data[0];
       console.log(data);
       Dispatch({
@@ -64,6 +68,7 @@ export default function Users() {
       setPageSize(response.data.last_page);
     })
     .catch(function(error){
+      setIsLoading(false);
       console.log(error.response);
     })
   }
@@ -132,6 +137,7 @@ export default function Users() {
   ];
   return (
     <ViewContainer>
+       <Loading isLoading={isLoading}/>
       <PageHeader title={allUsers.firstName} description="User’s information" />
       <Card
         sx={{

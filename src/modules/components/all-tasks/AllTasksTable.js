@@ -12,9 +12,11 @@ import {
 import Pagination from "../../Pagination";
 import view from "../../../assets/images/view.svg";
 import moment from 'moment';
+import Loading from "../../Loading";
+import { useState } from "react";
 
 export default function AllTasksTable(props) {
-  const { setSelectedUser, data ,setCurrentPage, pageSize } = props;
+  const { setSelectedUser, data ,setCurrentPage, pageSize,isLoading,setIsLoading } = props;
 
   const tableColumns = [
     <TableCell key="name">User Name</TableCell>,
@@ -36,6 +38,7 @@ export default function AllTasksTable(props) {
         boxShadow: "none",
       }}
     >
+      <Loading isLoading={isLoading}/>
       <Table
         sx={{
           background: "transparent",
